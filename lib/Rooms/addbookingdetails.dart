@@ -6,9 +6,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hostelhub/Rooms/room_controller.dart';
+import 'package:hostelhub/hostels/user_hostel.dart';
 import 'package:hostelhub/services/hostel_details_controller.dart';
-
-import '../hostels/hostel_details.dart';
 
 class bookerdetails extends StatefulWidget {
   const bookerdetails({Key? key}) : super(key: key);
@@ -307,11 +306,10 @@ class _bookerdetailsState extends State<bookerdetails> {
                                       "active": 2,
                                     });
                                     await sendNotificationToServer();
-                                    Navigator.push(
+                                    Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) =>
-                                              hostelDetails()),
+                                          builder: (context) => hostelsUser()),
                                     );
                                   }
                                 }
