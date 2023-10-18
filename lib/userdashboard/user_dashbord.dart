@@ -106,7 +106,19 @@ class _userDashboardState extends State<userDashboard> {
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
-            icon: Icon(Icons.person), // Three dots icon
+            icon: Container(
+              width: 50,
+              alignment: Alignment.topLeft,
+              child: CircleAvatar(
+                radius: 80,
+                backgroundColor: Colors.grey,
+                child: Icon(
+                  Icons.person,
+                  size: 20,
+                  color: Colors.white,
+                ),
+              ),
+            ), // Three dots icon
             onPressed: () {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => ProfileScreen()));

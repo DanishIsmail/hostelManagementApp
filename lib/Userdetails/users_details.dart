@@ -1,4 +1,4 @@
-// ignore_for_file: camel_case_types, use_key_in_widget_constructors, prefer_const_constructors, avoid_unnecessary_containers, sort_child_properties_last
+// ignore_for_file: camel_case_types, use_key_in_widget_constructors, prefer_const_constructors, avoid_unnecessary_containers, sort_child_properties_last, unused_local_variable
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -121,76 +121,134 @@ class _allUsersState extends State<allUsers> {
                   phone = user["uPhone"];
                   var warden = user["checkuser"] as int;
 
-                  return Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Container(
-                      alignment: Alignment.topLeft,
-                      height: 50,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  return Card(
+                    margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    color: Color.fromARGB(26, 47, 144, 223),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    shadowColor: Color.fromARGB(255, 198, 231, 235)
+                        .withOpacity(0.5), // Shadow color
+                    elevation: 5,
+                    child: ListTile(
+                      leading: Container(
+                        width: 50,
+                        alignment: Alignment.topLeft,
+                        child: CircleAvatar(
+                          radius: 80,
+                          backgroundColor: Colors.grey,
+                          child: Icon(
+                            Icons.person,
+                            size: 40,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      title: Row(
                         children: [
-                          Row(
-                            children: [
-                              Container(
-                                width: 50,
-                                alignment: Alignment.topLeft,
-                                child: CircleAvatar(
-                                  radius: 80,
-                                  backgroundColor: Colors.grey,
-                                  child: Icon(
-                                    Icons.person,
-                                    size: 40,
-                                    color: Colors.white,
-                                  ),
-                                ),
+                          Expanded(
+                            child: Text(
+                              "  Name:$username",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
                               ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 10),
-                                child: Container(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                            ),
+                          ),
+                        ],
+                      ),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(left: 10),
+                            child: Container(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("Email: $email"),
+                                  Text("Contact: $phone"),
+                                  Row(
                                     children: [
-                                      Text("Name: $username"),
-                                      Text("Email: $email"),
-                                      Text("Contact: $phone"),
+                                      warden == 0
+                                          ? ElevatedButton(
+                                              onPressed: () {},
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Text(
+                                                  "User",
+                                                  style: TextStyle(
+                                                      color: Colors.white),
+                                                ),
+                                              ),
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor: Color.fromARGB(
+                                                    255, 7, 80, 140),
+                                                shape: const StadiumBorder(),
+                                              ),
+                                            )
+                                          : ElevatedButton(
+                                              onPressed: () {},
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Text(
+                                                  "warden",
+                                                  style: TextStyle(
+                                                      color: Colors.white),
+                                                ),
+                                              ),
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor: Color.fromARGB(
+                                                    255, 7, 80, 140),
+                                                shape: const StadiumBorder(),
+                                              ),
+                                            ),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      checkuser == 1
+                                          ? ElevatedButton(
+                                              onPressed: () async {
+                                                if (warden == 2) {
+                                                  await FirebaseFirestore
+                                                      .instance
+                                                      .collection("users")
+                                                      .doc(user['userId'])
+                                                      .update({
+                                                    "checkuser": 0,
+                                                  });
+                                                } else {
+                                                  await FirebaseFirestore
+                                                      .instance
+                                                      .collection("users")
+                                                      .doc(user['userId'])
+                                                      .update({
+                                                    "checkuser": 2,
+                                                    'paid': 0,
+                                                    "salary": 0,
+                                                  });
+                                                }
+                                                // After performing the update, fetch the updated user data again
+                                                await fetchUsers();
+                                              },
+                                              child: Text(warden == 0
+                                                  ? "Make Warden"
+                                                  : "Remove Warden"),
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor: Color.fromARGB(
+                                                    255, 7, 80, 140),
+                                                shape: const StadiumBorder(),
+                                              ),
+                                            )
+                                          : Container()
                                     ],
                                   ),
-                                ),
+                                ],
                               ),
-                            ],
+                            ),
                           ),
-                          checkuser == 1
-                              ? ElevatedButton(
-                                  onPressed: () async {
-                                    if (warden == 2) {
-                                      await FirebaseFirestore.instance
-                                          .collection("users")
-                                          .doc(user['userId'])
-                                          .update({
-                                        "checkuser": 0,
-                                      });
-                                    } else {
-                                      await FirebaseFirestore.instance
-                                          .collection("users")
-                                          .doc(user['userId'])
-                                          .update({
-                                        "checkuser": 2,
-                                      });
-                                    }
-                                    // After performing the update, fetch the updated user data again
-                                    await fetchUsers();
-                                  },
-                                  child: Text(warden == 0
-                                      ? "Make Warden"
-                                      : "Remove Warden"),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor:
-                                        Color.fromARGB(255, 7, 80, 140),
-                                    shape: const StadiumBorder(),
-                                  ),
-                                )
-                              : Container()
                         ],
                       ),
                     ),

@@ -4,11 +4,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hostelhub/Userdetails/users_details.dart';
+import 'package:hostelhub/admin/wardens.dart';
 import 'package:hostelhub/bookings/applications.dart';
 // import 'package:hostelhub/hostels/hostelDetails.dart';
 import 'package:hostelhub/hostels/hostels.dart';
-import 'package:hostelhub/login/Dasbord/dashbord.dart';
-import 'package:hostelhub/payment.dart';
+import 'package:hostelhub/admin/Dasbord/dashbord.dart';
+import 'package:hostelhub/payment/payments.dart';
 
 import 'bookings/complains.dart';
 import 'hostels/hostel_details.dart';
@@ -124,31 +125,49 @@ class _HomeScreenState extends State<HomeScreen> {
               SizedBox(
                 height: 20,
               ),
-              checkuser == 2
+              GestureDetector(
+                onTap: () => {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => Payment()))
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      image: DecorationImage(
+                        image: AssetImage(
+                            'assets/images/payment.png'), // Replace with your own image path
+                        fit: BoxFit.fill,
+                        // colorFilter: ColorFilter.mode(
+                        //     Colors.grey.withOpacity(0.2), BlendMode.dstATop),
+                      )),
+                  child: Center(
+                    child: Text(
+                      'Payments',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  height: 175,
+                ),
+              ),
+              checkuser == 1
                   ? GestureDetector(
                       onTap: () => {
                         Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => Payment()))
+                            MaterialPageRoute(builder: (context) => warden()))
                       },
                       child: Container(
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(20),
                             image: DecorationImage(
                               image: AssetImage(
-                                  'assets/images/payment.png'), // Replace with your own image path
+                                  'assets/images/warden1.png'), // Replace with your own image path
                               fit: BoxFit.fill,
                               // colorFilter: ColorFilter.mode(
                               //     Colors.grey.withOpacity(0.2), BlendMode.dstATop),
                             )),
-                        child: Center(
-                          child: Text(
-                            'Payments',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 30,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ),
                         height: 175,
                       ),
                     )

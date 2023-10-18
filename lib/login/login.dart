@@ -7,7 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hostelhub/forgetPassword/fogetpasword.dart';
 import 'package:hostelhub/login/singup/login_controller.dart';
 import '../userdashboard/user_dashbord.dart';
-import 'Dasbord/dashbord.dart';
+import '../admin/Dasbord/dashbord.dart';
 import 'singup/singup.dart';
 
 class LoginPage extends StatefulWidget {
@@ -163,12 +163,12 @@ class _LoginPageState extends State<LoginPage> {
                       print('checkuser: $checkuser');
 
                       if (checkuser == 1 || checkuser == 2) {
-                        Navigator.push(
+                        Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(builder: (context) => Dashboard()),
                         );
                       } else if (checkuser == 0) {
-                        Navigator.push(
+                        Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
                               builder: (context) => userDashboard()),

@@ -10,9 +10,9 @@ import 'package:hostelhub/home.dart';
 // import 'package:hostelhub/hostels/hostels.dart';
 import 'package:hostelhub/profile.dart';
 
-import '../../admin/details.dart';
+import '../details.dart';
 import '../../hostels/add_hostel.dart';
-import '../login.dart';
+import '../../login/login.dart';
 
 class Dashboard extends StatefulWidget {
   Dashboard({super.key});
@@ -106,7 +106,19 @@ class _DashboardState extends State<Dashboard> {
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
-            icon: Icon(Icons.person), // Three dots icon
+            icon: Container(
+              width: 50,
+              alignment: Alignment.topLeft,
+              child: CircleAvatar(
+                radius: 80,
+                backgroundColor: Colors.grey,
+                child: Icon(
+                  Icons.person,
+                  size: 20,
+                  color: Colors.white,
+                ),
+              ),
+            ), // Three dots icon
             onPressed: () {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => ProfileScreen()));
