@@ -260,6 +260,10 @@ class _allRommsdetailsState extends State<allRommsdetails> {
                                         DateTime now = DateTime.now();
                                         String currentMonthName =
                                             DateFormat.MMMM().format(now);
+                                        String year =
+                                            DateFormat.y().format(now);
+                                        String paymentDocId =
+                                            "$currentMonthName$year";
 
                                         userId = data['userId'].toString();
                                         int rent = 0;
@@ -294,7 +298,7 @@ class _allRommsdetailsState extends State<allRommsdetails> {
                                           DocumentSnapshot paymentDocSnapshot =
                                               await FirebaseFirestore.instance
                                                   .collection('payment')
-                                                  .doc(currentMonthName)
+                                                  .doc(paymentDocId)
                                                   .get();
 
                                           if (paymentDocSnapshot.exists) {
@@ -315,11 +319,14 @@ class _allRommsdetailsState extends State<allRommsdetails> {
                                           DocumentReference paymentDocRef =
                                               FirebaseFirestore.instance
                                                   .collection('payment')
-                                                  .doc(currentMonthName);
+                                                  .doc(paymentDocId);
 
                                           // Update or create the payment document
-                                          paymentDocRef
-                                              .set({'payment': payment});
+                                          paymentDocRef.set({
+                                            'payment': payment,
+                                            "Month": currentMonthName,
+                                            "year": year,
+                                          });
 
                                           // Call your _payFee function
                                           _payFee(userId!,
