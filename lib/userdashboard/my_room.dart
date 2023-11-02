@@ -27,10 +27,18 @@ class _userRoomDetailsState extends State<userRoomDetails> {
   String? date;
   int? active;
   int? payment;
+  bool isRefreshed = false;
 
   @override
   void initState() {
     super.initState();
+    if (!isRefreshed) {
+      Future.delayed(Duration(seconds: 1), () {
+        setState(() {
+          isRefreshed = true;
+        });
+      });
+    }
     user = FirebaseAuth.instance.currentUser;
     userId = user!.uid;
     FirebaseFirestore.instance

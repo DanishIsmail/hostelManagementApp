@@ -28,6 +28,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String? email;
   String? phoneNumber;
   File? Imageurl;
+  bool isRefreshed = false;
 
   final auth = FirebaseAuth.instance;
   final picker = ImagePicker();
@@ -39,6 +40,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
     userId = user?.uid;
     print("user id: $userId");
     print("user email: ${user?.email}");
+    if (!isRefreshed) {
+      Future.delayed(Duration(seconds: 1), () {
+        setState(() {
+          isRefreshed = true;
+        });
+      });
+    }
 
     // Retrieve the profile image URL from Firestore and set it to `url`
     FirebaseFirestore.instance

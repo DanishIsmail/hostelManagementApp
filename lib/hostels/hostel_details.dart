@@ -69,7 +69,6 @@ class _hostelDetailsState extends State<hostelDetails> {
         Map<String, dynamic> data = docSnapshot.data();
         var checkuser = data['checkuser'];
         print('checkuser: $checkuser');
-        loginController().checkuser = checkuser;
       }
     });
 
@@ -95,7 +94,8 @@ class _hostelDetailsState extends State<hostelDetails> {
         backgroundColor: const Color.fromARGB(255, 7, 63, 108),
         title: Center(child: const Text("Rooms list")),
       ),
-      bottomNavigationBar: checkuser == 1 || checkuser == 2
+      bottomNavigationBar: loginController().checkuser == 1 ||
+              loginController().checkuser == 2
           ? CurvedNavigationBar(
               color: const Color.fromARGB(255, 7, 63, 108),
               backgroundColor: Colors.white,
