@@ -1,7 +1,8 @@
-// ignore_for_file: avoid_print, prefer_const_constructors, camel_case_types, unused_import, unused_local_variable, avoid_unnecessary_containers, unnecessary_string_interpolations
+// ignore_for_file: avoid_print, prefer_const_constructors, camel_case_types, unused_import, unused_local_variable, avoid_unnecessary_containers, unnecessary_string_interpolations, prefer_const_literals_to_create_immutables
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:hostelhub/admin/Dasbord/dashbord.dart';
 import 'package:hostelhub/hostels/add_hostel.dart';
 import 'package:hostelhub/hostels/sing_hostel.dart';
 
@@ -114,7 +115,36 @@ class _hostelsUserState extends State<hostelsUser> {
                             ),
                             Container(
                               child: Text("$hostelEmail"),
-                            )
+                            ),
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.star,
+                                  color:
+                                      Colors.yellow, // Set the size of the icon
+                                ),
+                                Icon(
+                                  Icons.star,
+                                  color:
+                                      Colors.yellow, // Set the size of the icon
+                                ),
+                                Icon(
+                                  Icons.star,
+                                  color:
+                                      Colors.yellow, // Set the size of the icon
+                                ),
+                                Icon(
+                                  Icons.star,
+                                  color:
+                                      Colors.yellow, // Set the size of the icon
+                                ),
+                                Icon(
+                                  Icons.star,
+                                  color:
+                                      Colors.yellow, // Set the size of the icon
+                                ),
+                              ],
+                            ),
                           ],
                         )
                       ],

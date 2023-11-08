@@ -67,7 +67,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
           children: [
             Container(
               height: 540,
-              color: Color.fromARGB(26, 47, 144, 223),
+              // color: Color.fromARGB(26, 47, 144, 223),
               child: StreamBuilder<QuerySnapshot>(
                 stream: FirebaseFirestore.instance
                     .collection('comments')
@@ -116,41 +116,90 @@ class _CommentsScreenState extends State<CommentsScreen> {
                       userName = data['username'];
 
                       if (checkuser == 1 || checkuser == 2) {
-                        return Row(
+                        return Column(
                           children: [
-                            Container(
-                              width: 300,
+                            Card(
+                              margin: EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 8),
+                              color: Color.fromARGB(26, 47, 144, 223),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                              shadowColor: Color.fromARGB(255, 198, 231, 235)
+                                  .withOpacity(0.5), // Shadow color
+                              elevation: 5,
                               child: ListTile(
+                                leading: Container(
+                                  width: 30,
+                                  alignment: Alignment.topLeft,
+                                  child: CircleAvatar(
+                                    radius: 80,
+                                    backgroundColor: Colors.grey,
+                                    child: Icon(
+                                      Icons.person,
+                                      size: 20,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
                                 title: Text(userName),
                                 subtitle: Text(userComment),
+                                trailing: ElevatedButton(
+                                  onPressed: () {
+                                    try {
+                                      String documentId =
+                                          document.id; // Get the document ID
+                                      FirebaseFirestore.instance
+                                          .collection('comments')
+                                          .doc(documentId)
+                                          .delete();
+                                      print('Document deleted successfully');
+                                    } catch (e) {
+                                      print('Error deleting document: $e');
+                                    }
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor:
+                                        Color.fromARGB(255, 7, 80, 140),
+                                  ),
+                                  child: Text("Delete"),
+                                ),
                               ),
-                            ),
-                            ElevatedButton(
-                              onPressed: () {
-                                try {
-                                  String documentId =
-                                      document.id; // Get the document ID
-                                  FirebaseFirestore.instance
-                                      .collection('comments')
-                                      .doc(documentId)
-                                      .delete();
-                                  print('Document deleted successfully');
-                                } catch (e) {
-                                  print('Error deleting document: $e');
-                                }
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    Color.fromARGB(255, 7, 80, 140),
-                              ),
-                              child: Text("Delete"),
                             ),
                           ],
                         );
                       } else {
-                        return ListTile(
-                          title: Text(userName),
-                          subtitle: Text(userComment),
+                        return Column(
+                          children: [
+                            Card(
+                              margin: EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 8),
+                              color: Color.fromARGB(26, 47, 144, 223),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                              shadowColor: Color.fromARGB(255, 198, 231, 235)
+                                  .withOpacity(0.5), // Shadow color
+                              elevation: 5,
+                              child: ListTile(
+                                leading: Container(
+                                  width: 30,
+                                  alignment: Alignment.topLeft,
+                                  child: CircleAvatar(
+                                    radius: 80,
+                                    backgroundColor: Colors.grey,
+                                    child: Icon(
+                                      Icons.person,
+                                      size: 20,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                                title: Text(userName),
+                                subtitle: Text(userComment),
+                              ),
+                            ),
+                          ],
                         );
                       }
                     },

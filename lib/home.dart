@@ -11,7 +11,7 @@ import 'package:hostelhub/hostels/hostels.dart';
 import 'package:hostelhub/admin/Dasbord/dashbord.dart';
 import 'package:hostelhub/payment/payments.dart';
 
-import 'bookings/complains.dart';
+import 'complains/complains.dart';
 import 'hostels/hostel_details.dart';
 
 // import 'hostels/hostel.dart';

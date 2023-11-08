@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print, prefer_const_constructors, unused_local_variable, avoid_unnecessary_containers, unnecessary_string_interpolations
+// ignore_for_file: avoid_print, prefer_const_constructors, unused_local_variable, avoid_unnecessary_containers, unnecessary_string_interpolations, prefer_const_literals_to_create_immutables
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
@@ -142,7 +142,36 @@ class _HostelsState extends State<Hostels> {
                             ),
                             Container(
                               child: Text("$hostelEmail"),
-                            )
+                            ),
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.star,
+                                  color:
+                                      Colors.yellow, // Set the size of the icon
+                                ),
+                                Icon(
+                                  Icons.star,
+                                  color:
+                                      Colors.yellow, // Set the size of the icon
+                                ),
+                                Icon(
+                                  Icons.star,
+                                  color:
+                                      Colors.yellow, // Set the size of the icon
+                                ),
+                                Icon(
+                                  Icons.star,
+                                  color:
+                                      Colors.yellow, // Set the size of the icon
+                                ),
+                                Icon(
+                                  Icons.star,
+                                  color:
+                                      Colors.yellow, // Set the size of the icon
+                                ),
+                              ],
+                            ),
                           ],
                         )
                       ],
