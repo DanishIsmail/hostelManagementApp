@@ -1,12 +1,12 @@
-// ignore_for_file: camel_case_types, deprecated_member_use, avoid_print, prefer_const_constructors, sized_box_for_whitespace
+// ignore_for_file: camel_case_types, deprecated_member_use, avoid_print, prefer_const_constructors, sized_box_for_whitespace, unnecessary_null_comparison
 
 import 'package:flutter/material.dart';
-import 'dart:io';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 import 'add_room_details.dart';
 
@@ -33,26 +33,20 @@ class _newHostelState extends State<newHostel> {
       FirebaseFirestore.instance.collection("hostel");
 
   Future<void> _uploadImage() async {
-    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    if (_image == null) {
+      return;
+    }
 
-    setState(() {
-      if (pickedFile != null) {
-        _image = File(pickedFile.path);
-      }
-    });
-
-    if (_image != null) {
-      try {
-        final imageName = DateTime.now().millisecondsSinceEpoch.toString();
-        final storageRef = firebase_storage.FirebaseStorage.instance
-            .ref()
-            .child('hostel_images')
-            .child('$imageName.jpg');
-        await storageRef.putFile(_image!);
-        imageUrl = await storageRef.getDownloadURL();
-      } catch (e) {
-        print("Error uploading image: $e");
-      }
+    try {
+      final imageName = DateTime.now().millisecondsSinceEpoch.toString();
+      final storageRef = firebase_storage.FirebaseStorage.instance
+          .ref()
+          .child('hostel_images')
+          .child('$imageName.jpg');
+      await storageRef.putFile(_image!);
+      imageUrl = await storageRef.getDownloadURL();
+    } catch (e) {
+      print("Error uploading image: $e");
     }
   }
 
@@ -71,9 +65,7 @@ class _newHostelState extends State<newHostel> {
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(
-            Icons.arrow_back_ios_new, // Replace with the desired back icon
-            // You can use any icon from the Icons class or your custom icon.
-            // For example: Icons.arrow_back, Icons.close, etc.
+            Icons.arrow_back_ios_new,
             color: Colors.white,
           ),
           onPressed: () {
@@ -188,6 +180,7 @@ class _newHostelState extends State<newHostel> {
         ),
         TextField(
           controller: hostelContactController,
+          keyboardType: TextInputType.number,
           decoration: InputDecoration(
             hintText: "Contact",
             fillColor: Theme.of(context).primaryColor.withOpacity(0.1),
@@ -204,6 +197,7 @@ class _newHostelState extends State<newHostel> {
         ),
         TextField(
           controller: hostelEmailController,
+          keyboardType: TextInputType.emailAddress,
           decoration: InputDecoration(
             hintText: "Email",
             fillColor: Theme.of(context).primaryColor.withOpacity(0.1),
@@ -259,31 +253,71 @@ class _newHostelState extends State<newHostel> {
               }
             });
 
-            if (!isHostelNameExist) {
-              await _uploadImage();
-
-              await FirebaseFirestore.instance.collection('hostel').add({
-                'hostelName': hostelName,
-                'hostelContact': contact,
-                'hostelEmail': email,
-                'hostelLocation': location,
-                'description': description,
-                'imageUrl': imageUrl ?? '',
-              });
-
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => addHostelRoom()),
-              );
+            await _uploadImage();
+            if (_image != null &&
+                hostelName != "" &&
+                contact != "" &&
+                email != "" &&
+                location != "" &&
+                description != "") {
+              _uploadImage();
+              if (!isHostelNameExist) {
+                if ((_image != null || imageUrl != null)) {
+                  Fluttertoast.showToast(
+                    msg: "Please upload an image ",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                    timeInSecForIosWeb: 1,
+                    backgroundColor: Color.fromARGB(255, 7, 80, 140),
+                    textColor: Colors.white,
+                  );
+                  await FirebaseFirestore.instance.collection('hostel').add({
+                    'hostelName': hostelName,
+                    'hostelContact': contact,
+                    'hostelEmail': email,
+                    'hostelLocation': location,
+                    'description': description,
+                    'imageUrl': imageUrl ?? '',
+                  });
+                  await Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => addHostelRoom()),
+                  );
+                }
+              } else if (hostelName == null &&
+                  contact == null &&
+                  email == null &&
+                  location == null &&
+                  description == null) {
+                Fluttertoast.showToast(
+                  msg: "Hostel with this name already exists",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM,
+                  timeInSecForIosWeb: 1,
+                  backgroundColor: Color.fromARGB(255, 7, 80, 140),
+                  textColor: Colors.white,
+                );
+              }
             } else {
-              Fluttertoast.showToast(
-                msg: "Hostel with this name already exists",
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.BOTTOM,
-                timeInSecForIosWeb: 1,
-                backgroundColor: Color.fromARGB(255, 7, 80, 140),
-                textColor: Colors.white,
-              );
+              if (_image == null) {
+                Fluttertoast.showToast(
+                  msg: "Please upload an image",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM,
+                  timeInSecForIosWeb: 1,
+                  backgroundColor: Color.fromARGB(255, 7, 80, 140),
+                  textColor: Colors.white,
+                );
+              } else {
+                Fluttertoast.showToast(
+                  msg: "Please fill all feilds",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM,
+                  timeInSecForIosWeb: 1,
+                  backgroundColor: Color.fromARGB(255, 7, 80, 140),
+                  textColor: Colors.white,
+                );
+              }
             }
           },
           child: Text(

@@ -69,7 +69,7 @@ class _allComplainsState extends State<allComplains> {
               child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
                 stream: FirebaseFirestore.instance
                     .collection('complains')
-                    .where('status', isNotEqualTo: 2)
+                    // .where('status', isNotEqualTo: 2)
                     .snapshots(),
                 builder: (BuildContext context,
                     AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
@@ -135,7 +135,7 @@ class _allComplainsState extends State<allComplains> {
                               SizedBox(height: 8),
                               Divider(color: Colors.grey),
                               SizedBox(height: 8),
-                              Text('Description: $description'),
+                              Text('Complain: $description'),
                               SizedBox(height: 8),
                               Row(
                                 children: [
@@ -157,7 +157,7 @@ class _allComplainsState extends State<allComplains> {
                                     ),
                                   if (status == 0 || status == 1)
                                     SizedBox(width: 8),
-                                  if (status == 0 || status == 1)
+                                  if (status == 0 || status == 1 || status == 2)
                                     ElevatedButton(
                                       onPressed: () async {
                                         await FirebaseFirestore.instance
@@ -172,8 +172,7 @@ class _allComplainsState extends State<allComplains> {
                                         shape: const StadiumBorder(),
                                       ),
                                     ),
-                                  if (status == 0 || status == 1)
-                                    SizedBox(width: 8),
+                                  SizedBox(width: 8),
                                   if (status == 0 || status == 1 || status == 3)
                                     ElevatedButton(
                                       onPressed: () async {

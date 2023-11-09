@@ -152,6 +152,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   height: 175,
                 ),
               ),
+              SizedBox(
+                height: 20,
+              ),
               checkuser == 1
                   ? GestureDetector(
                       onTap: () => {

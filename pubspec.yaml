@@ -55,6 +55,8 @@ dependencies:
   firebase_messaging: ^14.6.5
   firebase_admin: ^0.2.0-dev.7
   google_maps_flutter: ^2.3.1
+  rating_dialog: ^2.0.4
+  url_launcher: ^6.2.1
 
 dev_dependencies:
   flutter_test:
@@ -95,6 +97,8 @@ flutter:
     - assets/images/hostellist.png
     - assets/images/payment.png
     - assets/images/warden1.png
+    # - assets/images/hostelpic.png
+    
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 

@@ -4,6 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:hostelhub/Userdetails/userdetails_controller.dart';
+import 'package:hostelhub/rating/rating.dart';
 
 import '../login/singup/login_controller.dart';
 import '../services/hostel_details_controller.dart';
@@ -43,6 +45,7 @@ class _SingleHostelState extends State<SingleHostel> {
         final docSnapshot = querySnapshot.docs.first;
         Map<String, dynamic> data = docSnapshot.data();
         checkuser = data['checkuser'];
+        userController().username = data['username'];
         print('checkuser: $checkuser');
         loginController().checkuser = checkuser;
       }
@@ -158,7 +161,41 @@ class _SingleHostelState extends State<SingleHostel> {
                       subtitle: Text('$description'),
                     ),
                     Padding(
-                      padding: const EdgeInsets.all(20),
+                      padding: const EdgeInsets.only(
+                          left: 20, right: 20, top: 10, bottom: 10),
+                      child: Container(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () => {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => RatingApp(),
+                              ),
+                            )
+                          },
+                          child: checkuser == 1 || checkuser == 2
+                              ? Text(
+                                  "Review Feadback",
+                                  style: TextStyle(fontSize: 20),
+                                )
+                              : Text(
+                                  "Give Feadback",
+                                  style: TextStyle(fontSize: 20),
+                                ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Color.fromARGB(255, 7, 80, 140),
+                            shape: const StadiumBorder(),
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 16,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 20, right: 20, top: 10, bottom: 10),
                       child: Container(
                         width: double.infinity,
                         child: ElevatedButton(

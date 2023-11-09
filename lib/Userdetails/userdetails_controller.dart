@@ -3,6 +3,7 @@
 class userController {
   static final userController _session = userController._internal();
   String? userId;
+  String? username;
   factory userController() {
     return _session;
   }

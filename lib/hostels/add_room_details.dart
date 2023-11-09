@@ -1,4 +1,4 @@
-// ignore_for_file: file_names, camel_case_types, avoid_unnecessary_containers, prefer_const_constructors, avoid_print, unused_element, unused_local_variable, prefer_const_constructors_in_immutables, unused_import, unnecessary_string_interpolations
+// ignore_for_file: file_names, camel_case_types, avoid_unnecessary_containers, prefer_const_constructors, avoid_print, unused_element, unused_local_variable, prefer_const_constructors_in_immutables, unused_import, unnecessary_string_interpolations, unnecessary_null_comparison
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +22,10 @@ class _addHostelRoomState extends State<addHostelRoom> {
   TextEditingController rentController = TextEditingController();
   // ignore: non_constant_identifier_names
   String? hostelname = HostelController().hostelName;
+  String? aroomno = "";
+  String? aroomStatus = "";
+  String? aroomRent = "";
+  String? aroomSeating = "";
   void _showErrorToast(var err) {
     Fluttertoast.showToast(
       msg: "$err",
@@ -82,6 +86,7 @@ class _addHostelRoomState extends State<addHostelRoom> {
         ),
         TextField(
           controller: roomnoController,
+          keyboardType: TextInputType.number,
           decoration: InputDecoration(
             hintText: "Room no",
             fillColor: Theme.of(context).primaryColor.withOpacity(0.1),
@@ -97,6 +102,7 @@ class _addHostelRoomState extends State<addHostelRoom> {
         ),
         TextField(
           controller: roomSeatingController,
+          keyboardType: TextInputType.number,
           decoration: InputDecoration(
             hintText: "Seating capacity",
             fillColor: Theme.of(context).primaryColor.withOpacity(0.1),
@@ -112,6 +118,7 @@ class _addHostelRoomState extends State<addHostelRoom> {
         ),
         TextField(
           controller: roomStatus,
+          keyboardType: TextInputType.number,
           decoration: InputDecoration(
             hintText: "status",
             fillColor: Theme.of(context).primaryColor.withOpacity(0.1),
@@ -128,6 +135,7 @@ class _addHostelRoomState extends State<addHostelRoom> {
         ),
         TextField(
           controller: rentController,
+          keyboardType: TextInputType.number,
           decoration: InputDecoration(
             hintText: "Payment",
             fillColor: Theme.of(context).primaryColor.withOpacity(0.1),
@@ -149,13 +157,17 @@ class _addHostelRoomState extends State<addHostelRoom> {
               padding: const EdgeInsets.symmetric(vertical: 16),
             ),
             onPressed: () async {
-              var aroomno = roomnoController.text.trim();
-              var aroomStatus = roomStatus.text.trim();
-              var aroomRent = rentController.text.trim();
-              var aroomSeating = roomSeatingController.text.trim();
+              aroomno = roomnoController.text.trim();
+              aroomStatus = roomStatus.text.trim();
+              aroomRent = rentController.text.trim();
+              aroomSeating = roomSeatingController.text.trim();
               int bookedSeats = 0;
 
-              try {
+              if (aroomno != "" &&
+                  aroomStatus != "" &&
+                  aroomRent != "" &&
+                  aroomSeating != "" &&
+                  bookedSeats == 0) {
                 await FirebaseFirestore.instance
                     .collection('${hostelname}Rooms')
                     .doc(aroomno)
@@ -165,13 +177,20 @@ class _addHostelRoomState extends State<addHostelRoom> {
                   'Room_rent': aroomRent,
                   'Room_status': aroomStatus,
                   "bookedseats": bookedSeats,
-                  'hostelReference': HostelController().hostelId,
+                  'ostelReference': HostelController().hostelId,
                 });
-              } catch (error) {
-                _showErrorToast(error);
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => Hostels()));
+              } else {
+                Fluttertoast.showToast(
+                  msg: "Please fill all feilds",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM,
+                  timeInSecForIosWeb: 1,
+                  backgroundColor: Color.fromARGB(255, 7, 80, 140),
+                  textColor: Colors.white,
+                );
               }
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => Hostels()));
             },
             child: Text(
               "Save",

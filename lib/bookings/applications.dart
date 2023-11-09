@@ -71,213 +71,205 @@ class _applicationsState extends State<applications> {
                 return const Text("No related data exist");
               }
 
-              return data['Active'] == 0
-                  ? Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Card(
-                          margin:
-                              EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                          color: Color.fromARGB(26, 47, 144, 223),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          shadowColor: Color.fromARGB(255, 198, 231, 235)
-                              .withOpacity(0.5), // Shadow color
-                          elevation: 5,
-                          child: ListTile(
-                            title: Text(data['username'].toString()),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text("Hostel Name: " +
-                                    data['hostelID'].toString()),
-                                Text("Room no: " + data['roomId'].toString()),
-                                Row(
-                                  children: [
-                                    if (data['Active'] == 0)
-                                      Container(
-                                        child: ElevatedButton(
-                                          onPressed: () => {
-                                            roomId = data['roomId'].toString(),
-                                            hostelId =
-                                                data['hostelID'].toString(),
-                                            // room ref
-                                            roomref = FirebaseFirestore.instance
-                                                .collection(
-                                                    "$hostelId" + "Rooms")
-                                                .doc(roomId),
-                                            userId = data['userId'].toString(),
-                                            // roombooking ref
-                                            bookingref = FirebaseFirestore
-                                                .instance
-                                                .collection(
-                                                    "usersBookedDetails")
-                                                .doc(userId),
-                                            bookingref
-                                                .get()
-                                                .then((docSnapshot) {
-                                              if (docSnapshot.exists) {
-                                                Map<String, dynamic>? data =
-                                                    docSnapshot.data() as Map<
-                                                        String, dynamic>?;
-                                                if (data != null) {
-                                                  print("hello");
-                                                  bookingref
-                                                      .update({'Active': 1});
-                                                  setState(() {
-                                                    bookingController()
-                                                            .bookingStatus =
-                                                        data['Active'] as int;
-                                                  });
-                                                }
-                                              }
-                                            }),
-                                            if (userId != null)
-                                              {
-                                                userref = FirebaseFirestore
-                                                    .instance
-                                                    .collection("users")
-                                                    .doc(userId),
-                                              },
-                                            roomref.get().then((docSnapshot) {
-                                              if (docSnapshot.exists) {
-                                                Map<String, dynamic>? data =
-                                                    docSnapshot.data() as Map<
-                                                        String, dynamic>?;
-                                                if (data != null) {
-                                                  print("hello");
-                                                  int currentSeats =
-                                                      data['bookedseats']
-                                                          as int;
-                                                  print(
-                                                      "currentSeats:$currentSeats");
-                                                  roomref.update({
-                                                    'bookedseats':
-                                                        currentSeats + 1
-                                                  });
-                                                  userref.update({
-                                                    "active": 1,
-                                                  });
-                                                }
-                                              }
-                                            }),
-                                          },
-                                          child: const Text("Accept"),
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor:
-                                                Color.fromARGB(255, 7, 80, 140),
-                                            shape: const StadiumBorder(),
-                                          ),
-                                        ),
-                                      )
-                                    else if (data['Active'] == 1)
-                                      Container(
-                                        child: Text(
-                                            "This application is accepted"),
-                                      ),
-                                    SizedBox(
-                                      width: 20,
+              return Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Card(
+                    margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    color: Color.fromARGB(26, 47, 144, 223),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    shadowColor: Color.fromARGB(255, 198, 231, 235)
+                        .withOpacity(0.5), // Shadow color
+                    elevation: 5,
+                    child: ListTile(
+                      title: Text(data['username'].toString()),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Email: " + data['email'].toString()),
+                          Text("Phone no: " + data['uPhone'].toString()),
+                          Text("Hostel Name: " + data['hostelID'].toString()),
+                          Text("Room no: " + data['roomId'].toString()),
+                          Row(
+                            children: [
+                              if (data['Active'] == 0)
+                                Container(
+                                  child: ElevatedButton(
+                                    onPressed: () => {
+                                      roomId = data['roomId'].toString(),
+                                      hostelId = data['hostelID'].toString(),
+                                      // room ref
+                                      roomref = FirebaseFirestore.instance
+                                          .collection("$hostelId" + "Rooms")
+                                          .doc(roomId),
+                                      userId = data['userId'].toString(),
+                                      // roombooking ref
+                                      bookingref = FirebaseFirestore.instance
+                                          .collection("usersBookedDetails")
+                                          .doc(userId),
+                                      bookingref.get().then((docSnapshot) {
+                                        if (docSnapshot.exists) {
+                                          Map<String, dynamic>? data =
+                                              docSnapshot.data()
+                                                  as Map<String, dynamic>?;
+                                          if (data != null) {
+                                            print("hello");
+                                            bookingref.update({'Active': 1});
+                                            setState(() {
+                                              bookingController()
+                                                      .bookingStatus =
+                                                  data['Active'] as int;
+                                            });
+                                          }
+                                        }
+                                      }),
+                                      if (userId != null)
+                                        {
+                                          userref = FirebaseFirestore.instance
+                                              .collection("users")
+                                              .doc(userId),
+                                        },
+                                      roomref.get().then((docSnapshot) {
+                                        if (docSnapshot.exists) {
+                                          Map<String, dynamic>? data =
+                                              docSnapshot.data()
+                                                  as Map<String, dynamic>?;
+                                          if (data != null) {
+                                            print("hello");
+                                            int currentSeats =
+                                                data['bookedseats'] as int;
+                                            print("currentSeats:$currentSeats");
+                                            roomref.update({
+                                              'bookedseats': currentSeats + 1
+                                            });
+                                            userref.update({
+                                              "active": 1,
+                                            });
+                                          }
+                                        }
+                                      }),
+                                    },
+                                    child: const Text("Accept"),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor:
+                                          Color.fromARGB(255, 7, 80, 140),
+                                      shape: const StadiumBorder(),
                                     ),
-                                    if (data['Active'] == 0)
-                                      Container(
-                                        child: ElevatedButton(
-                                          onPressed: () => {
-                                            {
-                                              roomId =
-                                                  data['roomId'].toString(),
-                                              hostelId =
-                                                  data['hostelID'].toString(),
-                                              // room ref
-                                              roomref = FirebaseFirestore
-                                                  .instance
-                                                  .collection(
-                                                      "$hostelId" + "Rooms")
-                                                  .doc(roomId),
-                                              userId =
-                                                  data['userId'].toString(),
-                                              // roombooking ref
-                                              bookingref = FirebaseFirestore
-                                                  .instance
-                                                  .collection(
-                                                      "usersBookedDetails")
-                                                  .doc(userId),
-                                              bookingref
-                                                  .get()
-                                                  .then((docSnapshot) {
-                                                if (docSnapshot.exists) {
-                                                  Map<String, dynamic>? data =
-                                                      docSnapshot.data() as Map<
-                                                          String, dynamic>?;
-                                                  if (data != null) {
-                                                    print("hello");
-                                                    bookingref.update({
-                                                      'Active': 2,
-                                                    });
-                                                  }
-                                                }
-                                              }),
-                                              if (userId != null)
-                                                {
-                                                  userref = FirebaseFirestore
-                                                      .instance
-                                                      .collection("users")
-                                                      .doc(userId),
-                                                },
-                                              roomref.get().then((docSnapshot) {
-                                                if (docSnapshot.exists) {
-                                                  Map<String, dynamic>? data =
-                                                      docSnapshot.data() as Map<
-                                                          String, dynamic>?;
-                                                  if (data != null) {
-                                                    print("hello");
-                                                    int currentSeats =
-                                                        data['bookedseats']
-                                                            as int;
-                                                    print(
-                                                        "currentSeats:$currentSeats");
-                                                    roomref.update({
-                                                      'bookedseats':
-                                                          currentSeats + 1
-                                                    });
-                                                    userref.update({
-                                                      "active": 1,
-                                                    });
-                                                  }
-                                                }
-                                              }),
-                                            }
-                                            // roomref.update({
-                                            //   "bookedseats": capacity! + 1,
-                                            // })
-                                          },
-                                          child: const Text(
-                                            "Reject",
-                                          ),
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor:
-                                                Color.fromARGB(255, 7, 80, 140),
-                                            shape: const StadiumBorder(),
-                                          ),
-                                        ),
-                                      )
-                                    else if (data['Active'] == 2)
-                                      Container(
-                                        child:
-                                            Text("This application is rejeted"),
-                                      ),
-                                  ],
+                                  ),
                                 )
-                              ],
-                            ),
-                          ),
-                        ),
+                              else if (data['Active'] == 1)
+                                Container(
+                                  child: ElevatedButton(
+                                    onPressed: () => {},
+                                    child: const Text(
+                                      "Accepted",
+                                    ),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor:
+                                          Color.fromARGB(255, 7, 80, 140),
+                                      shape: const StadiumBorder(),
+                                    ),
+                                  ),
+                                )
+                              else if (data['Active'] == 2)
+                                ElevatedButton(
+                                  onPressed: () => {},
+                                  child: const Text(
+                                    "Rejected",
+                                  ),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor:
+                                        Color.fromARGB(255, 7, 80, 140),
+                                    shape: const StadiumBorder(),
+                                  ),
+                                ),
+                              SizedBox(
+                                width: 20,
+                              ),
+                              if (data['Active'] == 0)
+                                Container(
+                                  child: ElevatedButton(
+                                    onPressed: () => {
+                                      {
+                                        roomId = data['roomId'].toString(),
+                                        hostelId = data['hostelID'].toString(),
+                                        // room ref
+                                        roomref = FirebaseFirestore.instance
+                                            .collection("$hostelId" + "Rooms")
+                                            .doc(roomId),
+                                        userId = data['userId'].toString(),
+                                        // roombooking ref
+                                        bookingref = FirebaseFirestore.instance
+                                            .collection("usersBookedDetails")
+                                            .doc(userId),
+                                        bookingref.get().then((docSnapshot) {
+                                          if (docSnapshot.exists) {
+                                            Map<String, dynamic>? data =
+                                                docSnapshot.data()
+                                                    as Map<String, dynamic>?;
+                                            if (data != null) {
+                                              print("hello");
+                                              bookingref.update({
+                                                'Active': 2,
+                                              });
+                                            }
+                                          }
+                                        }),
+                                        if (userId != null)
+                                          {
+                                            userref = FirebaseFirestore.instance
+                                                .collection("users")
+                                                .doc(userId),
+                                          },
+                                        roomref.get().then((docSnapshot) {
+                                          if (docSnapshot.exists) {
+                                            Map<String, dynamic>? data =
+                                                docSnapshot.data()
+                                                    as Map<String, dynamic>?;
+                                            if (data != null) {
+                                              print("hello");
+                                              int currentSeats =
+                                                  data['bookedseats'] as int;
+                                              print(
+                                                  "currentSeats:$currentSeats");
+                                              roomref.update({
+                                                'bookedseats': currentSeats + 1
+                                              });
+                                              userref.update({
+                                                "active": 1,
+                                              });
+                                            }
+                                          }
+                                        }),
+                                      }
+                                      // roomref.update({
+                                      //   "bookedseats": capacity! + 1,
+                                      // })
+                                    },
+                                    child: const Text(
+                                      "Reject",
+                                    ),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor:
+                                          Color.fromARGB(255, 7, 80, 140),
+                                      shape: const StadiumBorder(),
+                                    ),
+                                  ),
+                                )
+                            ],
+                          )
+                        ],
                       ),
-                    )
-                  : Container();
+                    ),
+                  ),
+                ),
+              );
+              // : Container();
             },
           );
         },

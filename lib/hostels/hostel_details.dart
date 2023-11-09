@@ -117,8 +117,10 @@ class _hostelDetailsState extends State<hostelDetails> {
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             // ignore: prefer_adjacent_string_concatenation
-            .collection('$hostel_namme' +
-                'Rooms') // Remove curly braces and fix the collection name
+            .collection('$hostel_namme' + 'Rooms')
+            .orderBy(
+              'Roomseating',
+            ) // Remove curly braces and fix the collection name
             .snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
@@ -150,7 +152,7 @@ class _hostelDetailsState extends State<hostelDetails> {
               if (documents.isEmpty) {
                 return Center(
                   child: Text(
-                    'No comments yet.',
+                    'No rooms yet.',
                     style: TextStyle(fontSize: 16),
                   ),
                 );
@@ -217,33 +219,40 @@ class _hostelDetailsState extends State<hostelDetails> {
                   }
                 },
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 10, left: 20, right: 20),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Color.fromARGB(26, 47, 144, 223),
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Color.fromARGB(
-                              255, 198, 231, 235), // Shadow color
-                          spreadRadius: 2, // Spread radius
-                          blurRadius: 5, // Blur radius
-                          offset:
-                              Offset(0, 3), // Offset in the x and y directions
-                        ),
-                      ],
+                  padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
+                  child: Card(
+                    margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    color: Color.fromARGB(26, 47, 144, 223),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
                     ),
+                    shadowColor: Color.fromARGB(255, 198, 231, 235)
+                        .withOpacity(0.5), // Shadow color
+                    elevation: 5,
                     child: ListTile(
                       title: Row(
                         children: [
-                          Text("Room no: "),
+                          Text(
+                            "Room no: ",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
                           Text(roomNo ?? ''),
                         ],
                       ),
-                      subtitle: Row(
+                      subtitle: Column(
                         children: [
-                          Text("Room Status: "),
-                          Text(chekstatus ?? ''),
+                          Row(
+                            children: [
+                              Text("Room Status: "),
+                              Text(chekstatus ?? ''),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Text("Room seating: "),
+                              Text(Roomseating ?? ''),
+                            ],
+                          ),
                         ],
                       ),
                     ),

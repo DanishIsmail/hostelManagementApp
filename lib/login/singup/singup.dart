@@ -198,6 +198,7 @@ class _RegScreenState extends State<RegScreen> {
         ),
         TextField(
           controller: uPhonenoController,
+          keyboardType: TextInputType.number,
           decoration: InputDecoration(
             hintText: "Phone no",
             fillColor: Theme.of(context).primaryColor.withOpacity(0.1),

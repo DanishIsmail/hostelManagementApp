@@ -225,7 +225,7 @@ class _allRommsdetailsState extends State<allRommsdetails> {
                         padding: const EdgeInsets.only(top: 10.0),
                         child: Container(
                           width: MediaQuery.of(context).size.width,
-                          height: 80,
+                          height: 100,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
                             color: Color.fromARGB(26, 47, 144, 223),
@@ -248,6 +248,10 @@ class _allRommsdetailsState extends State<allRommsdetails> {
                                           data['roomId'].toString()),
                                       Text("Username: " +
                                           data['username'].toString()),
+                                      Text("Phone no: " +
+                                          data['uPhone'].toString()),
+                                      Text(
+                                          "Email: " + data['email'].toString()),
                                     ],
                                   ),
                                 ),
