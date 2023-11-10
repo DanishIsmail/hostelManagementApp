@@ -330,14 +330,16 @@ class _userRoomDetailsState extends State<userRoomDetails> {
                                     ),
                                   ),
                                   onPressed: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                payment_method()));
+                                    payment == 0
+                                        ? Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    payment_method()))
+                                        : null;
                                   },
                                 )),
-                          )
+                          ),
                         ],
                       ),
                     ),

@@ -123,7 +123,7 @@ class _PaymentMethodScreenState extends State<payment_method> {
                           toastLength: Toast.LENGTH_SHORT,
                           gravity: ToastGravity.BOTTOM,
                           timeInSecForIosWeb: 1,
-                          backgroundColor: Color(0xff392850),
+                          backgroundColor: Color.fromARGB(255, 7, 80, 140),
                           textColor: Colors.white,
                           fontSize: 16.0,
                         );
@@ -134,7 +134,7 @@ class _PaymentMethodScreenState extends State<payment_method> {
                         toastLength: Toast.LENGTH_SHORT,
                         gravity: ToastGravity.BOTTOM,
                         timeInSecForIosWeb: 1,
-                        backgroundColor: Color(0xff392850),
+                        backgroundColor: Color.fromARGB(255, 7, 80, 140),
                         textColor: Colors.white,
                         fontSize: 16.0,
                       );
