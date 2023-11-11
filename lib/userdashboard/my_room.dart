@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, unnecessary_cast, prefer_interpolation_to_compose_strings, non_constant_identifier_names, camel_case_types, avoid_print, avoid_unnecessary_containers, prefer_const_literals_to_create_immutables, unnecessary_null_comparison, sort_child_properties_last, sized_box_for_whitespace
 
 import 'package:hostelhub/payment/payment.dart';
+import 'package:hostelhub/payment/paymentpic.dart';
 import 'package:hostelhub/payment/paymnet_controller.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -111,9 +112,12 @@ class _userRoomDetailsState extends State<userRoomDetails> {
             roomId = dataMap['roomId'];
             request_time = dataMap['createdId'];
             payment = dataMap['payment'];
+            userpayment().hostelid = dataMap['hostelID'];
+            userpayment().roomId = dataMap['roomId'];
             userpayment().uid = dataMap["userId"];
             userpayment().payment = dataMap["payment"];
             userpayment().uid = dataMap["userId"];
+            userpayment().username = dataMap["username"];
 
             FirebaseFirestore.instance
                 .collection(hostel! + "Rooms")
@@ -337,6 +341,32 @@ class _userRoomDetailsState extends State<userRoomDetails> {
                                                 builder: (context) =>
                                                     payment_method()))
                                         : null;
+                                  },
+                                )),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                top: 10, left: 20, right: 20, bottom: 10),
+                            child: Container(
+                                width: double.infinity,
+                                child: ElevatedButton(
+                                  child: Text(
+                                    "Transaction History",
+                                  ),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor:
+                                        Color.fromARGB(255, 7, 80, 140),
+                                    shape: const StadiumBorder(),
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 16,
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                PaymentPic()));
                                   },
                                 )),
                           ),

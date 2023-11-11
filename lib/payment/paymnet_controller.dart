@@ -6,6 +6,8 @@ class userpayment {
   int? payment;
   String? uid;
   int? rent;
+  String? roomId;
+  String? hostelid;
   String? username;
   factory userpayment() {
     return _session;

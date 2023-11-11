@@ -97,6 +97,9 @@ flutter:
     - assets/images/hostellist.png
     - assets/images/payment.png
     - assets/images/warden1.png
+    - assets/images/transaction.png
+    - assets/images/transaction1.png
+    
     # - assets/images/hostelpic.png
     
   # An image asset can refer to one or more resolution-specific "variants", see

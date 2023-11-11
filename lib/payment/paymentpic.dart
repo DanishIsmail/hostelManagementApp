@@ -1,119 +1,230 @@
-// ignore_for_file: use_key_in_widget_constructors, library_private_types_in_public_api, deprecated_member_use, prefer_const_constructors
+// ignore_for_file: deprecated_member_use, unused_local_variable, prefer_const_constructors, sort_child_properties_last, avoid_print, avoid_function_literals_in_foreach_calls, prefer_final_fields, library_private_types_in_public_api, use_key_in_widget_constructors
 
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class UploadImageScreen extends StatefulWidget {
-  @override
-  _UploadImageScreenState createState() => _UploadImageScreenState();
+import 'paymnet_controller.dart';
+
+class Transaction {
+  String userId;
+  String month;
+  String username;
+
+  Transaction(this.userId, this.month, this.username);
 }
 
-class _UploadImageScreenState extends State<UploadImageScreen> {
-  final picker = ImagePicker();
-  PickedFile? _image;
-  List<String> _imageUrls = [];
+class ImageData {
+  String imageUrl;
+  DateTime time;
 
+  ImageData(this.imageUrl, this.time);
+}
+
+class PaymentPic extends StatefulWidget {
+  @override
+  _PaymentPicState createState() => _PaymentPicState();
+}
+
+class _PaymentPicState extends State<PaymentPic> {
   @override
   void initState() {
     super.initState();
-    _fetchImages();
+    // Call _fetchImageData in initState to fetch images when the widget is created
+    _fetchImageData();
   }
 
-  Future<void> _fetchImages() async {
-    QuerySnapshot imageSnapshot =
-        await FirebaseFirestore.instance.collection('images').get();
+  final picker = ImagePicker();
+  List<ImageData> _imageDataList = [];
 
-    setState(() {
-      _imageUrls = imageSnapshot.docs
-          .map((doc) => (doc.data() as Map<String, dynamic>)["url"] as String)
-          .toList();
+  // ... (Previous code)
+  Future<void> _fetchImageData() async {
+    // Ensure that userpayment().uid returns the correct UID
+    String? userId = userpayment().uid;
+    CollectionReference transactions =
+        FirebaseFirestore.instance.collection('transactions');
+    DocumentReference transactionDoc = transactions.doc(userId);
+
+    print(transactionDoc);
+    // Fetch the 'images' subcollection
+    QuerySnapshot imagesSnapshot = await transactionDoc
+        .collection('images')
+        .orderBy('time', descending: true)
+        .get();
+    print(imagesSnapshot);
+
+    // Clear the previous list before fetching new data
+    // _imageDataList.clear();
+    print("hello ali1");
+
+    // Process each image document
+    imagesSnapshot.docs.forEach((imageDoc) {
+      // Check if 'imageUrl' and 'time' fields exist and are not null
+      if (imageDoc['imageUrl'] != null && imageDoc['time'] != null) {
+        String imageUrl = imageDoc['imageUrl'];
+
+        // Use 'Timestamp' class to convert Firestore timestamp to DateTime
+        Timestamp timestamp = imageDoc['time'];
+        DateTime time = timestamp.toDate();
+
+        print("Image URL: $imageUrl");
+        print("Time: $time");
+
+        // Create an ImageData object and add it to the list
+        _imageDataList.add(ImageData(imageUrl, time));
+      } else {
+        print("Image document is missing 'imageUrl' or 'time' fields.");
+      }
     });
+
+    // Update the UI
+    setState(() {});
   }
 
+  // Function to show a dialog to select an image from gallery or camera
   Future<void> _pickImage() async {
     final pickedFile = await picker.getImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
-      setState(() {
-        _image = pickedFile;
-      });
+      _showImageDialog(File(pickedFile.path));
     }
   }
 
-  Future<void> _saveImage() async {
-    if (_image == null) {
-      return;
-    }
+  // Function to show a dialog with the selected image
+  Future<void> _showImageDialog(File imageFile) async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: SingleChildScrollView(
+            child: Column(
+              children: [
+                Image.file(imageFile),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(); // Close the image dialog
+                      },
+                      child: Text('Cancel'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color.fromARGB(255, 7, 80, 140),
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        _sendImageToDatabase(imageFile);
+                        setState(() {});
+                        Navigator.of(context).pop(); // Close the image dialog
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color.fromARGB(255, 7, 80, 140),
+                      ),
+                      child: Text('Send'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 
+  // Function to send the image data to the database
+  Future<void> _sendImageToDatabase(File imageFile) async {
+    // Replace with actual username
+
+    DateTime now = DateTime.now();
+    int currentMonth = now.month;
+    // Save the image to Firebase Storage
     Reference storageReference =
         FirebaseStorage.instance.ref().child('images/${DateTime.now()}.jpg');
-    UploadTask uploadTask = storageReference.putFile(File(_image!.path));
-    await uploadTask.whenComplete(() async {
-      String imageUrl = await storageReference.getDownloadURL();
+    UploadTask uploadTask = storageReference.putFile(imageFile);
+    TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() => null);
 
-      await FirebaseFirestore.instance.collection('images').add({
-        'url': imageUrl,
-        'timestamp': FieldValue.serverTimestamp(),
-      });
+    // Get the image URL from Firebase Storage
+    String imageUrl = await taskSnapshot.ref.getDownloadURL();
 
-      setState(() {
-        _image = null;
-      });
+    // Save image data to the database
+    CollectionReference transactions =
+        FirebaseFirestore.instance.collection('transactions');
+    DocumentReference transactionDoc =
+        transactions.doc(userpayment().uid); // Create a document with userId
 
-      _fetchImages();
+    // Create or update the 'doc' field inside the document
+    await transactionDoc.set({
+      'userId': userpayment().uid,
+      'doc': {
+        'month': currentMonth,
+        'username': userpayment().username,
+        "hostelid": userpayment().hostelid,
+        "roomId": userpayment().roomId,
+      },
+    }, SetOptions(merge: true));
+
+    // Add image data to the 'images' subcollection
+    CollectionReference imagesCollection = transactionDoc.collection('images');
+    await imagesCollection.add({
+      'imageUrl': imageUrl,
+      'time': FieldValue.serverTimestamp(),
     });
+
+    print('Image sent to database');
+  }
+
+  // Function to fetch image data from the database
+  Widget _buildImageList() {
+    return ListView.builder(
+      itemCount: _imageDataList.length,
+      itemBuilder: (context, index) {
+        ImageData imageData = _imageDataList[index];
+        return Card(
+          margin: EdgeInsets.all(8.0),
+          child: ListTile(
+            title: Image.network(imageData.imageUrl),
+            subtitle: Text('Time: ${imageData.time}'),
+          ),
+        );
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Upload Image Example'),
+          title: Text('Transactions'),
+          backgroundColor: Color.fromARGB(255, 7, 80, 140),
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back_ios_new,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          )),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _pickImage,
+        child: Icon(Icons.add),
+        backgroundColor: Color.fromARGB(255, 7, 80, 140),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            if (_image != null)
-              Image.file(
-                File(_image!.path),
-                width: 200,
-                height: 200,
-              )
-            else
-              Icon(
-                Icons.image,
-                size: 100,
-              ),
-            ElevatedButton(
-              onPressed: _pickImage,
-              child: Text('Pick an image from gallery'),
-            ),
-            ElevatedButton(
-              onPressed: _saveImage,
-              child: Text('Save to Firebase'),
-            ),
-            SizedBox(height: 20),
-            Text('Images from Firestore:'),
-            Column(
-              children: _imageUrls.map((imageUrl) {
-                return Image.network(
-                  imageUrl,
-                  width: 200,
-                  height: 200,
-                );
-              }).toList(),
+          children: [
+            Expanded(
+              child: _buildImageList(),
             ),
           ],
         ),
       ),
     );
   }
-}
-
-void main() {
-  runApp(MaterialApp(home: UploadImageScreen()));
 }

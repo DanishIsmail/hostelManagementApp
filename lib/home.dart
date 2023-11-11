@@ -13,6 +13,7 @@ import 'package:hostelhub/payment/payments.dart';
 
 import 'complains/complains.dart';
 import 'hostels/hostel_details.dart';
+import 'transaction/transactions.dart';
 
 // import 'hostels/hostel.dart';
 
@@ -145,13 +146,47 @@ class _HomeScreenState extends State<HomeScreen> {
                       'Payments',
                       style: TextStyle(
                           color: Colors.white,
-                          fontSize: 30,
+                          fontSize: 35,
                           fontWeight: FontWeight.bold),
                     ),
                   ),
                   height: 175,
                 ),
               ),
+              SizedBox(
+                height: 20,
+              ),
+              checkuser == 2
+                  ? GestureDetector(
+                      child: Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            // color: Color.fromARGB(167, 114, 203, 241),
+                            image: DecorationImage(
+                              image: AssetImage(
+                                  'assets/images/transaction1.png'), // Replace with your own image path
+                              fit: BoxFit.fill,
+                              // colorFilter: ColorFilter.mode(
+                              //     Colors.grey.withOpacity(0.2), BlendMode.dstATop),
+                            )),
+                        height: 175,
+                        child: Center(
+                            child: Text(
+                          "Transaction",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 35,
+                              fontWeight: FontWeight.bold),
+                        )),
+                      ),
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => TransactionsScreen()));
+                      },
+                    )
+                  : Container(),
               SizedBox(
                 height: 20,
               ),
