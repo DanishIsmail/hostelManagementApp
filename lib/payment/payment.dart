@@ -23,34 +23,34 @@ class _PaymentMethodScreenState extends State<payment_method> {
   TextEditingController paymentController = TextEditingController();
 
   Future<void> _sendPayment(userId) async {
-    try {
-      // Update payment status to 1
-      FirebaseFirestore.instance
-          .collection("usersBookedDetails")
-          .doc(userId)
-          .update({"payment": 1}).then((_) {
-        print("Payment status updated to 1 for userId: $userId");
+    // try {
+    //   // Update payment status to 1
+    //   FirebaseFirestore.instance
+    //       .collection("usersBookedDetails")
+    //       .doc(userId)
+    //       .update({"payment": 1}).then((_) {
+    //     print("Payment status updated to 1 for userId: $userId");
 
-        // Schedule to reset payment status after 30 days
-        Timer(Duration(days: 30), () {
-          FirebaseFirestore.instance
-              .collection("usersBookedDetails")
-              .doc(userId)
-              .update({"payment": 0}).then((_) {
-            print(
-                "Payment status reset to 0 for userId: $userId after 30 days");
-          }).catchError((error) {
-            print("Error resetting payment status: $error");
-          });
-        });
-      }).catchError((error) {
-        print("Error updating payment status: $error");
-      });
-    } catch (e) {
-      print("Exception while updating payment status: $e");
-    }
+    //     // Schedule to reset payment status after 30 days
+    //     Timer(Duration(days: 30), () {
+    //       FirebaseFirestore.instance
+    //           .collection("usersBookedDetails")
+    //           .doc(userId)
+    //           .update({"payment": 0}).then((_) {
+    //         print(
+    //             "Payment status reset to 0 for userId: $userId after 30 days");
+    //       }).catchError((error) {
+    //         print("Error resetting payment status: $error");
+    //       });
+    //     });
+    //   }).catchError((error) {
+    //     print("Error updating payment status: $error");
+    //   });
+    // } catch (e) {
+    //   print("Exception while updating payment status: $e");
+    // }
 
-    await Future.delayed(Duration(seconds: 2));
+    // await Future.delayed(Duration(seconds: 2));
 
     setState(() {
       _isLoading = false;
