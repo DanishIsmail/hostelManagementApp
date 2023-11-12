@@ -224,7 +224,7 @@ class _roomDetailsState extends State<roomDetails> {
                           width: double.infinity,
                           child: ElevatedButton(
                               onPressed: () => {
-                                    Navigator.push(
+                                    Navigator.pushReplacement(
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>

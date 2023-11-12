@@ -60,153 +60,155 @@ class _CommentsScreenState extends State<CommentsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double screenHeight = MediaQuery.of(context).size.height;
-    double oneThirdHeight = screenHeight / 3;
+    // double screenHeight = MediaQuery.of(context).size.height;
+    // double oneThirdHeight = screenHeight / 3;
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Container(
-              height: oneThirdHeight,
-              // color: Color.fromARGB(26, 47, 144, 223),
-              child: StreamBuilder<QuerySnapshot>(
-                stream: FirebaseFirestore.instance
-                    .collection('comments')
-                    .snapshots(),
-                builder: (BuildContext context,
-                    AsyncSnapshot<QuerySnapshot> snapshot) {
-                  if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
-                  }
+            SingleChildScrollView(
+              child: Container(
+                height: 550,
+                // color: Color.fromARGB(26, 47, 144, 223),
+                child: StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection('comments')
+                      .snapshots(),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<QuerySnapshot> snapshot) {
+                    if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    }
 
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const CircularProgressIndicator();
-                  }
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const CircularProgressIndicator();
+                    }
 
-                  List<QueryDocumentSnapshot> documents = snapshot.data!.docs;
+                    List<QueryDocumentSnapshot> documents = snapshot.data!.docs;
 
-                  if (documents.isEmpty) {
-                    return Center(
-                      child: Text(
-                        'No comments yet.',
-                        style: TextStyle(fontSize: 16),
+                    if (documents.isEmpty) {
+                      return Center(
+                        child: Text(
+                          'No comments yet.',
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      );
+                    }
+
+                    return ListView.separated(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: documents.length,
+                      separatorBuilder: (BuildContext context, int index) =>
+                          Divider(
+                        height: 3,
+                        color: Colors.black,
                       ),
+                      itemBuilder: (BuildContext context, int index) {
+                        QueryDocumentSnapshot document = documents[index];
+                        Map<String, dynamic>? data =
+                            documents[index].data() as Map<String, dynamic>?;
+
+                        if (data == null) {
+                          return Container(
+                            child: Text("no comment yet"),
+                          );
+                        }
+                        userComment = data['comment'];
+                        userName = data['username'];
+
+                        if (checkuser == 1 || checkuser == 2) {
+                          return Column(
+                            children: [
+                              Card(
+                                margin: EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 8),
+                                color: Color.fromARGB(26, 47, 144, 223),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                                shadowColor: Color.fromARGB(255, 198, 231, 235)
+                                    .withOpacity(0.5), // Shadow color
+                                elevation: 5,
+                                child: ListTile(
+                                  leading: Container(
+                                    width: 30,
+                                    alignment: Alignment.topLeft,
+                                    child: CircleAvatar(
+                                      radius: 80,
+                                      backgroundColor: Colors.grey,
+                                      child: Icon(
+                                        Icons.person,
+                                        size: 20,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                  title: Text(userName),
+                                  subtitle: Text(userComment),
+                                  trailing: ElevatedButton(
+                                    onPressed: () {
+                                      try {
+                                        String documentId =
+                                            document.id; // Get the document ID
+                                        FirebaseFirestore.instance
+                                            .collection('comments')
+                                            .doc(documentId)
+                                            .delete();
+                                        print('Document deleted successfully');
+                                      } catch (e) {
+                                        print('Error deleting document: $e');
+                                      }
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor:
+                                          Color.fromARGB(255, 7, 80, 140),
+                                    ),
+                                    child: Text("Delete"),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        } else {
+                          return Column(
+                            children: [
+                              Card(
+                                margin: EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 8),
+                                color: Color.fromARGB(26, 47, 144, 223),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                                shadowColor: Color.fromARGB(255, 198, 231, 235)
+                                    .withOpacity(0.5), // Shadow color
+                                elevation: 5,
+                                child: ListTile(
+                                  leading: Container(
+                                    width: 30,
+                                    alignment: Alignment.topLeft,
+                                    child: CircleAvatar(
+                                      radius: 80,
+                                      backgroundColor: Colors.grey,
+                                      child: Icon(
+                                        Icons.person,
+                                        size: 20,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                  title: Text(userName),
+                                  subtitle: Text(userComment),
+                                ),
+                              ),
+                            ],
+                          );
+                        }
+                      },
                     );
-                  }
-
-                  return ListView.separated(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: documents.length,
-                    separatorBuilder: (BuildContext context, int index) =>
-                        Divider(
-                      height: 3,
-                      color: Colors.black,
-                    ),
-                    itemBuilder: (BuildContext context, int index) {
-                      QueryDocumentSnapshot document = documents[index];
-                      Map<String, dynamic>? data =
-                          documents[index].data() as Map<String, dynamic>?;
-
-                      if (data == null) {
-                        return Container(
-                          child: Text("no comment yet"),
-                        );
-                      }
-                      userComment = data['comment'];
-                      userName = data['username'];
-
-                      if (checkuser == 1 || checkuser == 2) {
-                        return Column(
-                          children: [
-                            Card(
-                              margin: EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 8),
-                              color: Color.fromARGB(26, 47, 144, 223),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8.0),
-                              ),
-                              shadowColor: Color.fromARGB(255, 198, 231, 235)
-                                  .withOpacity(0.5), // Shadow color
-                              elevation: 5,
-                              child: ListTile(
-                                leading: Container(
-                                  width: 30,
-                                  alignment: Alignment.topLeft,
-                                  child: CircleAvatar(
-                                    radius: 80,
-                                    backgroundColor: Colors.grey,
-                                    child: Icon(
-                                      Icons.person,
-                                      size: 20,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                                title: Text(userName),
-                                subtitle: Text(userComment),
-                                trailing: ElevatedButton(
-                                  onPressed: () {
-                                    try {
-                                      String documentId =
-                                          document.id; // Get the document ID
-                                      FirebaseFirestore.instance
-                                          .collection('comments')
-                                          .doc(documentId)
-                                          .delete();
-                                      print('Document deleted successfully');
-                                    } catch (e) {
-                                      print('Error deleting document: $e');
-                                    }
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor:
-                                        Color.fromARGB(255, 7, 80, 140),
-                                  ),
-                                  child: Text("Delete"),
-                                ),
-                              ),
-                            ),
-                          ],
-                        );
-                      } else {
-                        return Column(
-                          children: [
-                            Card(
-                              margin: EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 8),
-                              color: Color.fromARGB(26, 47, 144, 223),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8.0),
-                              ),
-                              shadowColor: Color.fromARGB(255, 198, 231, 235)
-                                  .withOpacity(0.5), // Shadow color
-                              elevation: 5,
-                              child: ListTile(
-                                leading: Container(
-                                  width: 30,
-                                  alignment: Alignment.topLeft,
-                                  child: CircleAvatar(
-                                    radius: 80,
-                                    backgroundColor: Colors.grey,
-                                    child: Icon(
-                                      Icons.person,
-                                      size: 20,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                                title: Text(userName),
-                                subtitle: Text(userComment),
-                              ),
-                            ),
-                          ],
-                        );
-                      }
-                    },
-                  );
-                },
+                  },
+                ),
               ),
             ),
             Row(

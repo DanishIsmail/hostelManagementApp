@@ -91,7 +91,7 @@ class _updateRooomState extends State<updateRooom> {
             // var seats = roomSeatingController.text;
             if (rent.isNotEmpty) {
               updateAllRooms(rent);
-              Navigator.push(
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => roomDetails()),
               );

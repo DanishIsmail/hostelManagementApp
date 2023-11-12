@@ -156,7 +156,7 @@ class _HomeScreenState extends State<HomeScreen> {
               SizedBox(
                 height: 20,
               ),
-              checkuser == 2
+              checkuser == 2 || checkuser == 1
                   ? GestureDetector(
                       child: Container(
                         decoration: BoxDecoration(
