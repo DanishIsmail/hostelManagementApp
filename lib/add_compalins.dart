@@ -43,7 +43,7 @@ class _addComplainsState extends State<addComplains> {
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
-    double oneThirdHeight = screenHeight / 3;
+    double oneThirdHeight = screenHeight / 1.5;
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -82,7 +82,7 @@ class _addComplainsState extends State<addComplains> {
               child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
                 stream: FirebaseFirestore.instance
                     .collection('complains')
-                    .where('status', isNotEqualTo: 2)
+                    // .where('status', isNotEqualTo: 2)
                     .snapshots(),
                 builder: (BuildContext context,
                     AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>

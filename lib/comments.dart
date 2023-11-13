@@ -36,7 +36,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
         .get();
     if (querySnapshot.docs.isNotEmpty) {
       final docSnapshot = querySnapshot.docs.first;
-      Map<String, dynamic> data = docSnapshot.data()!;
+      Map<String, dynamic> data = docSnapshot.data();
       setState(() {
         checkuser = data['checkuser'];
         print('checkuser: $checkuser');
