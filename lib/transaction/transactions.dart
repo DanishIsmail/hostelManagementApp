@@ -18,30 +18,6 @@ class MyApp extends StatelessWidget {
 }
 
 class TransactionsScreen extends StatelessWidget {
-  // Fetch function as you provided
-  // Future<void> _fetchAllTransactionData() async {
-  //   CollectionReference transactions =
-  //       FirebaseFirestore.instance.collection('transactions');
-
-  //   try {
-  //     QuerySnapshot transactionsSnapshot = await transactions.get();
-
-  //     transactionsSnapshot.docs.forEach((transactionDoc) {
-  //       String userId = transactionDoc['userId'];
-  //       int month = transactionDoc['doc']['month'];
-  //       String username = transactionDoc['doc']['username'];
-
-  //       // // Display details
-  //       // print('User ID: $userId');
-  //       // print('Month: $month');
-  //       // print('Username: $username');
-  //       // print('------------------');
-  //     });
-  //   } catch (e) {
-  //     print('Error fetching transactions: $e');
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

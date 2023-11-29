@@ -1,3 +1,4 @@
 {
-    "cmake.sourceDirectory": "E:/dart1/hostelhub/build/windows/extracted/firebase_cpp_sdk"
+    "cmake.sourceDirectory": "E:/dart1/hostelhub/build/windows/extracted/firebase_cpp_sdk",
+    "editor.inlineSuggest.showToolbar": "always"
 }
