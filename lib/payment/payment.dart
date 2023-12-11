@@ -1,4 +1,4 @@
-// ignore_for_file: camel_case_types, library_private_types_in_public_api, deprecated_member_use, use_build_context_synchronously, prefer_const_constructors, use_key_in_widget_constructors, avoid_unnecessary_containers, curly_braces_in_flow_control_structures, avoid_print, sized_box_for_whitespace
+// ignore_for_file: camel_case_types, library_private_types_in_public_api, deprecated_member_use, use_build_context_synchronously, prefer_const_constructors, use_key_in_widget_constructors, avoid_unnecessary_containers, curly_braces_in_flow_control_structures, avoid_print, sized_box_for_whitespace, unused_import
 
 import 'dart:async';
 import 'package:flutter/material.dart';
@@ -28,13 +28,20 @@ class _PaymentMethodScreenState extends State<payment_method> {
     const url = 'https://www.hblibank.com.pk/Login';
     if (await canLaunch(url)) {
       await launch(url);
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => userDashboard()),
-      );
+      // Uncomment the following lines if you want to navigate to userDashboard after launching the URL
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(builder: (context) => userDashboard()),
+      // );
     } else {
       throw 'Could not launch $url';
     }
+  }
+
+  @override
+  void initState() {
+    print("userpayment().rent${userpayment().rent}");
+    super.initState();
   }
 
   @override
@@ -81,8 +88,8 @@ class _PaymentMethodScreenState extends State<payment_method> {
                         int.tryParse(inputText); // Try to parse it to an int
 
                     if (input != null) {
-                      if (userpayment().rent == input &&
-                          (userpayment().payment == 0)) {
+                      // ignore: unrelated_type_equality_checks
+                      if (userpayment().rent == inputText) {
                         if (!_isLoading) {
                           _sendPayment(userpayment().uid);
                         }

@@ -5,7 +5,7 @@ class userpayment {
   double? bill;
   int? payment;
   String? uid;
-  int? rent;
+  String? rent;
   String? roomId;
   String? hostelid;
   String? username;

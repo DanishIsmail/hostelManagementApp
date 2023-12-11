@@ -146,6 +146,9 @@ class _userRoomDetailsState extends State<userRoomDetails> {
                 roombookedseats = data?['bookedseats'];
                 roomrent = data?['Room_rent'];
                 roomcapcity = data?["Roomseating"];
+                userpayment().rent = data?["Room_rent"];
+                print("userpayment().rent${userpayment().rent}");
+
                 print("$roomrent");
                 print("$roombookedseats");
                 print("$roomcapcity");
@@ -360,6 +363,12 @@ class _userRoomDetailsState extends State<userRoomDetails> {
                                           ),
                                         ),
                                         onPressed: () {
+                                          setState(() {
+                                            userpayment().rent =
+                                                data['Room_rent'];
+                                            print(
+                                                "userpayment().rent${userpayment().rent}");
+                                          });
                                           payment == 0
                                               ? Navigator.push(
                                                   context,
