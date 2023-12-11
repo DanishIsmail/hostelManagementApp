@@ -60,6 +60,7 @@ class _addComplainsState extends State<addComplains> {
             child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
               stream: FirebaseFirestore.instance
                   .collection('complains')
+                  .where("uid", isEqualTo: userId)
                   .snapshots(),
               builder: (BuildContext context,
                   AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
