@@ -1,23 +1,19 @@
-// ignore_for_file: unused_local_variable, unnecessary_string_interpolations, prefer_adjacent_string_concatenation, unnecessary_cast, prefer_const_constructors, avoid_unnecessary_containers, override_on_non_overriding_member, avoid_print
+// ignore_for_file: unused_local_variable, unnecessary_string_interpolations, prefer_adjacent_string_concatenation, unnecessary_cast, prefer_const_constructors, avoid_unnecessary_containers, camel_case_types
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:hostelhub/hostels/add_hostel.dart';
-import 'package:hostelhub/hostels/sing_hostel.dart';
-import 'package:hostelhub/login/singup/login_controller.dart';
+import 'package:hostelhub/transaction/transactions.dart';
 
 import '../services/hostel_details_controller.dart';
 
-class Hostels extends StatefulWidget {
-  const Hostels({Key? key}) : super(key: key);
+class hostelTransaction extends StatefulWidget {
+  const hostelTransaction({Key? key}) : super(key: key);
 
   @override
-  State<Hostels> createState() => _HostelsState();
+  State<hostelTransaction> createState() => _hostelTransactionState();
 }
 
-class _HostelsState extends State<Hostels> {
+class _hostelTransactionState extends State<hostelTransaction> {
   Future<double?> calculateAverageRating(String hostelName) async {
     final ratings = await FirebaseFirestore.instance
         .collection("$hostelName" + 'ratings')
@@ -58,32 +54,9 @@ class _HostelsState extends State<Hostels> {
   }
 
   @override
-  User user = FirebaseAuth.instance.currentUser!;
-  String? userId;
-  String email = '';
-  int? checkuser;
-  @override
   void initState() {
     super.initState();
-    fetchCheckUser();
-  }
-
-  Future<void> fetchCheckUser() async {
-    userId = user.uid;
-    final querySnapshot = await FirebaseFirestore.instance
-        .collection("users")
-        .doc(userId)
-        .get()
-        .then((snapshot) {
-      var data = snapshot.data();
-      if (data != null) {
-        setState(() {
-          checkuser = data['checkuser'];
-          loginController().checkuser = checkuser;
-          print(loginController().checkuser);
-        });
-      }
-    });
+    setState(() {});
   }
 
   @override
@@ -102,24 +75,6 @@ class _HostelsState extends State<Hostels> {
         ),
         title: const Text("Hostel list"),
       ),
-      bottomNavigationBar: checkuser == 1
-          ? CurvedNavigationBar(
-              color: Color.fromARGB(255, 7, 80, 140),
-              backgroundColor: Colors.white,
-              buttonBackgroundColor: Color.fromARGB(255, 7, 80, 140),
-              height: 60,
-              items: const <Widget>[
-                Icon(Icons.add, size: 30, color: Colors.white),
-              ],
-              onTap: (index) {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => const newHostel()));
-              },
-            )
-          : Container(
-              color: const Color.fromARGB(255, 7, 63, 108),
-              height: 50,
-            ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance.collection('hostel').snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -171,11 +126,11 @@ class _HostelsState extends State<Hostels> {
                       ),
                       child: GestureDetector(
                         onTap: () {
-                          HostelController().hostelId = documents[index].id;
+                          HostelController().hostelId = data['hostelName'];
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => SingleHostel()),
+                                builder: (context) => TransactionsScreen()),
                           );
                         },
                         child: Row(

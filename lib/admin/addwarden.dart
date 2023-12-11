@@ -1,19 +1,19 @@
-// ignore_for_file: use_build_context_synchronously, prefer_const_constructors, sort_child_properties_last
+// ignore_for_file: use_build_context_synchronously, prefer_const_constructors, sort_child_properties_last, sized_box_for_whitespace, avoid_print
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:hostelhub/login/login.dart';
+import 'package:hostelhub/admin/wardens.dart';
 
-class RegScreen extends StatefulWidget {
-  const RegScreen({Key? key}) : super(key: key);
+class Addwaden extends StatefulWidget {
+  const Addwaden({Key? key}) : super(key: key);
 
   @override
-  State<RegScreen> createState() => _RegScreenState();
+  State<Addwaden> createState() => _AddwadenState();
 }
 
-class _RegScreenState extends State<RegScreen> {
+class _AddwadenState extends State<Addwaden> {
   TextEditingController usernameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController uPhonenoController = TextEditingController();
@@ -23,7 +23,11 @@ class _RegScreenState extends State<RegScreen> {
   User? user = FirebaseAuth.instance.currentUser;
 
   bool isPasswordVisible = false; // Track password visibility
-  bool isCPasswordVisible = false; // Track confirm password visibility
+  bool isCPasswordVisible = false;
+  int? indexx;
+  int selectedFuelStation = 0;
+  String? selectedhostelname = "00";
+  // Track confirm password visibility
 
   void _createAccount() async {
     var username = usernameController.text.trim();
@@ -35,6 +39,7 @@ class _RegScreenState extends State<RegScreen> {
     if (username.isEmpty ||
         uemail.isEmpty ||
         upassword.isEmpty ||
+        selectedhostelname == "00" ||
         uphone.isEmpty ||
         ucpassword.isEmpty) {
       Fluttertoast.showToast(
@@ -102,12 +107,15 @@ class _RegScreenState extends State<RegScreen> {
           "profileImage": " ",
           'active': 0,
           "userId": user.uid,
-          "checkuser": 0,
+          "hostelName": selectedhostelname,
+          "checkuser": 2,
+          'paid': 0,
+          "salary": 0,
         });
 
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => LoginPage()),
+          MaterialPageRoute(builder: (context) => warden()),
         );
       }
     } catch (e) {
@@ -134,7 +142,6 @@ class _RegScreenState extends State<RegScreen> {
               children: [
                 _header(),
                 _inputFields(),
-                _loginInfo(),
               ],
             ),
           ),
@@ -272,37 +279,114 @@ class _RegScreenState extends State<RegScreen> {
         SizedBox(
           height: 10,
         ),
+        Container(
+          height: 120,
+          // ignore: avoid_unnecessary_containers
+          child: Container(
+            child: StreamBuilder<QuerySnapshot>(
+              stream:
+                  FirebaseFirestore.instance.collection('hostel').snapshots(),
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                }
+
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                }
+
+                List<QueryDocumentSnapshot> documents = snapshot.data!.docs;
+
+                if (documents.isEmpty) {
+                  return Center(
+                    child: Text(
+                      'No hostel yet.',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  );
+                }
+
+                return ListView.separated(
+                  shrinkWrap: true,
+                  itemCount: documents.length,
+                  separatorBuilder: (BuildContext context, int index) {
+                    return Divider(); // Add a divider between items.
+                  },
+                  itemBuilder: (BuildContext context, int index) {
+                    QueryDocumentSnapshot document = documents[index];
+                    Map<String, dynamic>? data =
+                        document.data() as Map<String, dynamic>?;
+                    var name = data?['hostelName'];
+                    var address = data?['hostelLocation'];
+                    // Wrap the Container representing each fuel station with GestureDetector
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          indexx = index;
+                          selectedhostelname = name;
+                          print("index$index");
+                        });
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(
+                            color: indexx == index
+                                ? Color.fromARGB(255, 7, 80, 140)
+                                : Colors.grey,
+                            width: 2,
+                          ),
+                          color: Color(0xffF6F6F6),
+                        ),
+                        child: Card(
+                          elevation: 2,
+                          margin:
+                              EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          child: ListTile(
+                            leading: Icon(Icons.hotel_sharp),
+                            title: Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    name,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            subtitle: Text(
+                              address,
+                              style: TextStyle(
+                                fontStyle: FontStyle.italic,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+        ),
+        SizedBox(
+          height: 10,
+        ),
         ElevatedButton(
           onPressed: _createAccount,
           child: const Text(
-            "Sign Up",
+            "Make warden",
             style: TextStyle(fontSize: 20, color: Colors.white),
           ),
           style: ElevatedButton.styleFrom(
             backgroundColor: Color.fromARGB(255, 7, 80, 140),
             shape: const StadiumBorder(),
             padding: const EdgeInsets.symmetric(vertical: 16),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _loginInfo() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Text("Already have an account?"),
-        TextButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => LoginPage()),
-            );
-          },
-          child: const Text(
-            "Login",
-            style: TextStyle(color: Color.fromARGB(255, 7, 80, 140)),
           ),
         ),
       ],

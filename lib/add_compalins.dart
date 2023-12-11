@@ -12,12 +12,10 @@ class addComplains extends StatefulWidget {
 }
 
 class _addComplainsState extends State<addComplains> {
-  TextEditingController CommentController = TextEditingController();
+  TextEditingController commentController = TextEditingController();
   User? user;
   String? userId;
   String? username;
-  String? userCommnet;
-  String? userName;
   String? phoneno;
 
   @override
@@ -42,15 +40,11 @@ class _addComplainsState extends State<addComplains> {
 
   @override
   Widget build(BuildContext context) {
-    double screenHeight = MediaQuery.of(context).size.height;
-    double oneThirdHeight = screenHeight / 1.5;
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(
-            Icons.arrow_back_ios_new, // Replace with the desired back icon
-            // You can use any icon from the Icons class or your custom icon.
-            // For example: Icons.arrow_back, Icons.close, etc.
+            Icons.arrow_back_ios_new,
             color: Colors.white,
           ),
           onPressed: () {
@@ -60,197 +54,173 @@ class _addComplainsState extends State<addComplains> {
         title: Text("Complain"),
         backgroundColor: Color.fromARGB(255, 7, 80, 140),
       ),
-      bottomNavigationBar: Container(
-        color: const Color.fromARGB(255, 7, 63, 108),
-        height: 50,
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 10.0),
-              child: Container(
-                child: Text(
-                  "Your Complains",
-                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 19),
-                ),
-              ),
-            ),
-            Container(
-              height: oneThirdHeight,
-              color: Color.fromARGB(26, 241, 241, 241),
-              child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                stream: FirebaseFirestore.instance
-                    .collection('complains')
-                    // .where('status', isNotEqualTo: 2)
-                    .snapshots(),
-                builder: (BuildContext context,
-                    AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
-                        snapshot) {
-                  if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
-                  }
+      body: Column(
+        children: [
+          Expanded(
+            child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+              stream: FirebaseFirestore.instance
+                  .collection('complains')
+                  .snapshots(),
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                }
 
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return CircularProgressIndicator();
-                  }
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();
+                }
 
-                  List<QueryDocumentSnapshot> documents = snapshot.data!.docs;
-                  if (documents.isEmpty) {
-                    return Center(
-                      child: Text(
-                        'No complaints yet.',
-                        style: TextStyle(fontSize: 16),
+                List<QueryDocumentSnapshot> documents = snapshot.data!.docs;
+                if (documents.isEmpty) {
+                  return Center(
+                    child: Text(
+                      'No complaints yet.',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  );
+                }
+                return ListView.builder(
+                  itemCount: documents.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    QueryDocumentSnapshot document = documents[index];
+                    Map<String, dynamic>? data =
+                        documents[index].data() as Map<String, dynamic>?;
+                    var description = data!["complain"];
+                    var status = data["status"];
+                    return Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: status == 1
+                              ? Color.fromARGB(255, 7, 80, 140)
+                              : Colors.grey,
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                    );
-                  }
-                  return ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: documents.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        QueryDocumentSnapshot document = documents[index];
-                        Map<String, dynamic>? data =
-                            documents[index].data() as Map<String, dynamic>?;
-                        var phoneno = data!["phone"];
-                        var description = data["complain"];
-                        var status = data["status"];
-                        return Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: data["status"] == 1
-                                  ? Color.fromARGB(255, 7, 80, 140)
-                                  : Colors.grey,
-                              width: 2,
-                            ),
-                            borderRadius: BorderRadius.circular(8),
+                      margin: EdgeInsets.all(8),
+                      padding: EdgeInsets.all(8),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'ID:${index + 1}',
+                            style: TextStyle(fontWeight: FontWeight.bold),
                           ),
-                          margin: EdgeInsets.all(8),
-                          padding: EdgeInsets.all(8),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          SizedBox(height: 8),
+                          Text(
+                            'Name: ' + data["username"],
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: 8),
+                          Divider(color: Colors.grey),
+                          SizedBox(height: 8),
+                          Row(
                             children: [
-                              Text(
-                                'ID:${index + 1}',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                              SizedBox(height: 8),
-                              Text(
-                                'Name: ' + data["username"],
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                              SizedBox(height: 8),
-                              Divider(color: Colors.grey),
-                              SizedBox(height: 8),
-                              Row(
-                                children: [
-                                  Text('Email: ' + data["email"]),
-                                ],
-                              ),
-                              SizedBox(height: 8),
-                              Divider(color: Colors.grey),
-                              SizedBox(height: 8),
-                              Text('Description: $description'),
-                              SizedBox(height: 8),
-                              Row(
-                                children: [
-                                  if (status == 0 || status == 1)
-                                    ElevatedButton(
-                                      onPressed: () async {
-                                        // await FirebaseFirestore.instance
-                                        //     .collection("complains")
-                                        //     .doc(document.id)
-                                        //     .update({"status": 1});
-                                        // setState(() {});
-                                      },
-                                      child: Text('In Progress'),
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor:
-                                            Color.fromARGB(255, 7, 80, 140),
-                                        shape: const StadiumBorder(),
-                                      ),
-                                    )
-                                  else if (status == 2)
-                                    ElevatedButton(
-                                        onPressed: () async {
-                                          // await FirebaseFirestore.instance
-                                          //     .collection("complains")
-                                          //     .doc(document.id)
-                                          //     .update({"status": 2});
-                                        },
-                                        child: Text('Resolved'),
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor:
-                                              Color.fromARGB(255, 7, 80, 140),
-                                          shape: const StadiumBorder(),
-                                        ))
-                                  else if (status == 3)
-                                    ElevatedButton(
-                                      onPressed: () async {
-                                        await FirebaseFirestore.instance
-                                            .collection("complains")
-                                            .doc(document.id)
-                                            .update({"status": 3});
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor:
-                                            Color.fromARGB(255, 7, 80, 140),
-                                        shape: const StadiumBorder(),
-                                      ),
-                                      child: Text('Resolved'),
-                                    ),
-                                ],
-                              ),
+                              Text('Email: ' + data["email"]),
                             ],
                           ),
-                        );
-                      });
-                },
-              ),
+                          SizedBox(height: 8),
+                          Divider(color: Colors.grey),
+                          SizedBox(height: 8),
+                          Text('Description: $description'),
+                          SizedBox(height: 8),
+                          Row(
+                            children: [
+                              if (status == 0 || status == 1)
+                                ElevatedButton(
+                                  onPressed: () async {
+                                    // Update status to indicate in-progress
+                                    await FirebaseFirestore.instance
+                                        .collection("complains")
+                                        .doc(document.id)
+                                        .update({"status": 1});
+                                  },
+                                  child: Text('In Progress'),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor:
+                                        Color.fromARGB(255, 7, 80, 140),
+                                    shape: const StadiumBorder(),
+                                  ),
+                                )
+                              else if (status == 2)
+                                ElevatedButton(
+                                  onPressed: () async {
+                                    // Update status to indicate resolved
+                                    await FirebaseFirestore.instance
+                                        .collection("complains")
+                                        .doc(document.id)
+                                        .update({"status": 2});
+                                  },
+                                  child: Text('Resolved'),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor:
+                                        Color.fromARGB(255, 7, 80, 140),
+                                    shape: const StadiumBorder(),
+                                  ),
+                                )
+                              else if (status == 3)
+                                ElevatedButton(
+                                  onPressed: () async {
+                                    // Update status to indicate resolved
+                                    await FirebaseFirestore.instance
+                                        .collection("complains")
+                                        .doc(document.id)
+                                        .update({"status": 3});
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor:
+                                        Color.fromARGB(255, 7, 80, 140),
+                                    shape: const StadiumBorder(),
+                                  ),
+                                  child: Text('Resolved'),
+                                ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                );
+              },
             ),
-            Divider(
-              height: 2,
-              color: Colors.black,
-            ),
-            Row(
+          ),
+          Divider(
+            height: 2,
+            color: Colors.black,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(10),
+            child: Row(
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Container(
-                    constraints: BoxConstraints(
-                      minHeight: 70,
-                      maxWidth: 300,
-                    ),
-                    child: TextField(
-                      maxLines: null,
-                      controller: CommentController,
-                      decoration: InputDecoration(
-                        hintText: "Add new complain",
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(18),
-                          borderSide: BorderSide(
-                              color: Color.fromARGB(255, 9, 99, 117)),
+                Expanded(
+                  child: TextField(
+                    maxLines: null,
+                    controller: commentController,
+                    decoration: InputDecoration(
+                      hintText: "Add new complain",
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(18),
+                        borderSide: BorderSide(
+                          color: Color.fromARGB(255, 9, 99, 117),
                         ),
                       ),
                     ),
                   ),
                 ),
+                SizedBox(width: 10),
                 ElevatedButton(
                   onPressed: () {
-                    var comment = CommentController
-                        .text; // Get the text value from the TextEditingController
-                    if (comment != null && comment.isNotEmpty) {
-                      FirebaseFirestore.instance
-                          .collection("complains")
-                          .doc()
-                          .set({
+                    var comment = commentController.text.trim();
+                    if (comment.isNotEmpty) {
+                      FirebaseFirestore.instance.collection("complains").add({
                         "username": username,
                         "complain": comment,
                         "uid": userId,
                         "status": 0,
                         "email": user?.email,
                       });
-                      CommentController
-                          .clear(); // Clear the text field after sending the comment
+                      commentController.clear();
                     }
                   },
                   style: ElevatedButton.styleFrom(
@@ -263,9 +233,17 @@ class _addComplainsState extends State<addComplains> {
                 ),
               ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
+}
+
+void main() {
+  runApp(
+    MaterialApp(
+      home: addComplains(),
+    ),
+  );
 }

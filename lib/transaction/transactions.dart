@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:hostelhub/services/hostel_details_controller.dart';
 import 'package:hostelhub/transaction/singletransaction.dart';
 
 void main() {
@@ -34,8 +35,10 @@ class TransactionsScreen extends StatelessWidget {
             },
           )),
       body: StreamBuilder(
-        stream:
-            FirebaseFirestore.instance.collection('transactions').snapshots(),
+        stream: FirebaseFirestore.instance
+            .collection('transactions')
+            .where("doc.hostelid", isEqualTo: HostelController().hostelId)
+            .snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return Center(

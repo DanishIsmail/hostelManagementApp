@@ -25,6 +25,7 @@ class _allRommsdetailsState extends State<allRommsdetails> {
   String? userId;
   String email = '';
   int? checkuser;
+  String? hostelid;
 
   List<String> hostelNames = [];
 
@@ -42,12 +43,15 @@ class _allRommsdetailsState extends State<allRommsdetails> {
         .collection("users")
         .where("email", isEqualTo: email)
         .get();
+
     if (querySnapshot.docs.isNotEmpty) {
       final docSnapshot = querySnapshot.docs.first;
       Map<String, dynamic> data = docSnapshot.data();
       setState(() {
-        checkuser = data['checkuser'];
+        checkuser = data['checkuser'] as int?;
+        hostelid = data['hostelName'] as String?;
         print('checkuser: $checkuser');
+        print('hostelid: $hostelid');
         fetchHostelNames();
       });
     }
@@ -81,19 +85,36 @@ class _allRommsdetailsState extends State<allRommsdetails> {
 
   Stream<QuerySnapshot> getStream() {
     if (_searchController.text.isEmpty) {
-      if (selectedValue == "Select------") {
-        // If no search text and "Select------" is chosen, get all data with Active: 1
-        return FirebaseFirestore.instance
-            .collection("usersBookedDetails")
-            .where("Active", isEqualTo: 1)
-            .snapshots();
+      if (checkuser == 2) {
+        if (checkuser == 1) {
+          // If no search text and "Select------" is chosen, get all data with Active: 1
+          return FirebaseFirestore.instance
+              .collection("usersBookedDetails")
+              .where("Active", isEqualTo: 1)
+              .snapshots();
+        } else {
+          // If no search text but a hostel is selected, get data for that hostel with Active: 1
+          return FirebaseFirestore.instance
+              .collection("usersBookedDetails")
+              .where("Active", isEqualTo: 1)
+              .where("hostelID", isEqualTo: hostelid)
+              .snapshots();
+        }
       } else {
-        // If no search text but a hostel is selected, get data for that hostel with Active: 1
-        return FirebaseFirestore.instance
-            .collection("usersBookedDetails")
-            .where("Active", isEqualTo: 1)
-            .where("hostelID", isEqualTo: selectedValue)
-            .snapshots();
+        if (selectedValue == "Select------") {
+          // If no search text and "Select------" is chosen, get all data with Active: 1
+          return FirebaseFirestore.instance
+              .collection("usersBookedDetails")
+              .where("Active", isEqualTo: 1)
+              .snapshots();
+        } else {
+          // If no search text but a hostel is selected, get data for that hostel with Active: 1
+          return FirebaseFirestore.instance
+              .collection("usersBookedDetails")
+              .where("Active", isEqualTo: 1)
+              .where("hostelID", isEqualTo: selectedValue)
+              .snapshots();
+        }
       }
     } else {
       if (selectedValue == "Select------") {
@@ -175,26 +196,28 @@ class _allRommsdetailsState extends State<allRommsdetails> {
                   ),
                 ),
               ),
-              DropdownButton<String>(
-                value: selectedValue,
-                onChanged: (String? newValue) {
-                  setState(() {
-                    if (newValue == "Select------") {
-                      selectedValue = "Select------";
-                      setState(() {});
-                    } else {
-                      selectedValue = newValue!;
-                    }
-                  });
-                },
-                items:
-                    hostelNames.map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-              ),
+              checkuser == 1
+                  ? DropdownButton<String>(
+                      value: selectedValue,
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          if (newValue == "Select------") {
+                            selectedValue = "Select------";
+                            setState(() {});
+                          } else {
+                            selectedValue = newValue!;
+                          }
+                        });
+                      },
+                      items: hostelNames
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    )
+                  : Container(),
               StreamBuilder(
                 stream: getStream(),
                 builder: (BuildContext context,

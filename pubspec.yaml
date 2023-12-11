@@ -100,6 +100,8 @@ flutter:
     - assets/images/warden1.png
     - assets/images/transaction.png
     - assets/images/transaction1.png
+    - assets/images/requests.png
+    
     # - assets/images/applogo.png
     
     # - assets/images/hostelpic.png

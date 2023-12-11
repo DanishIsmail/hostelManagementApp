@@ -145,7 +145,7 @@ class _SingleHostelState extends State<SingleHostel> {
                       subtitle: Text('$hostelName'),
                     ),
                     ListTile(
-                      title: Text('Location'),
+                      title: Text('Address'),
                       subtitle: Text('$hostelLocation'),
                     ),
                     ListTile(

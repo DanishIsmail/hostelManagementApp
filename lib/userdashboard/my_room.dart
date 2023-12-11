@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors, unnecessary_cast, prefer_interpolation_to_compose_strings, non_constant_identifier_names, camel_case_types, avoid_print, avoid_unnecessary_containers, prefer_const_literals_to_create_immutables, unnecessary_null_comparison, sort_child_properties_last, sized_box_for_whitespace
 
-import 'package:hostelhub/payment/payment.dart';
 import 'package:hostelhub/payment/paymentpic.dart';
+import 'package:hostelhub/payment/paymenttype.dart';
 import 'package:hostelhub/payment/paymnet_controller.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -29,6 +29,7 @@ class _userRoomDetailsState extends State<userRoomDetails> {
   Timestamp? request_time;
   String? date;
   int? active;
+  int? active2;
   int? payment;
   bool isRefreshed = false;
 
@@ -54,6 +55,19 @@ class _userRoomDetailsState extends State<userRoomDetails> {
             docSnapshot.data() as Map<String, dynamic>?;
         if (data != null) {
           active = data["active"];
+        }
+      }
+    });
+    FirebaseFirestore.instance
+        .collection("usersBookedDetails")
+        .doc(userId)
+        .get()
+        .then((docSnapshot) {
+      if (docSnapshot.exists) {
+        Map<String, dynamic>? data =
+            docSnapshot.data() as Map<String, dynamic>?;
+        if (data != null) {
+          active2 = data["Active"];
         }
       }
     });
@@ -137,7 +151,7 @@ class _userRoomDetailsState extends State<userRoomDetails> {
                 print("$roomcapcity");
               }
             });
-            return active == 1 || active == 2
+            return active == 1 || active == 2 || active == 0
                 ? Container(
                     child: Padding(
                       padding: const EdgeInsets.all(15),
@@ -230,10 +244,21 @@ class _userRoomDetailsState extends State<userRoomDetails> {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              Text(
-                                active == 2 ? "Pending" : "Accepted",
-                                style: TextStyle(fontSize: 19),
-                              ),
+                              if (active2 == 0)
+                                Text(
+                                  "Pending",
+                                  style: TextStyle(fontSize: 19),
+                                )
+                              else if (active2 == 1)
+                                Text(
+                                  "Accepted",
+                                  style: TextStyle(fontSize: 19),
+                                )
+                              else if (active2 == 2)
+                                Text(
+                                  "Rejected",
+                                  style: TextStyle(fontSize: 19),
+                                ),
                             ],
                           ),
                           Divider(color: Colors.black),
@@ -277,7 +302,7 @@ class _userRoomDetailsState extends State<userRoomDetails> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Payment:",
+                                "Rent status:",
                                 style: TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
@@ -316,60 +341,64 @@ class _userRoomDetailsState extends State<userRoomDetails> {
                                   },
                                 )),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                top: 10, left: 20, right: 20, bottom: 10),
-                            child: Container(
-                                width: double.infinity,
-                                child: ElevatedButton(
-                                  child: Text(
-                                    "Payment ",
-                                  ),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor:
-                                        Color.fromARGB(255, 7, 80, 140),
-                                    shape: const StadiumBorder(),
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 16,
-                                    ),
-                                  ),
-                                  onPressed: () {
-                                    payment == 0
-                                        ? Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    payment_method()))
-                                        : null;
-                                  },
-                                )),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                top: 10, left: 20, right: 20, bottom: 10),
-                            child: Container(
-                                width: double.infinity,
-                                child: ElevatedButton(
-                                  child: Text(
-                                    "Transaction History",
-                                  ),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor:
-                                        Color.fromARGB(255, 7, 80, 140),
-                                    shape: const StadiumBorder(),
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 16,
-                                    ),
-                                  ),
-                                  onPressed: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                PaymentPic()));
-                                  },
-                                )),
-                          ),
+                          active2 == 1
+                              ? Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 10, left: 20, right: 20, bottom: 10),
+                                  child: Container(
+                                      width: double.infinity,
+                                      child: ElevatedButton(
+                                        child: Text(
+                                          "Rent",
+                                        ),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor:
+                                              Color.fromARGB(255, 7, 80, 140),
+                                          shape: const StadiumBorder(),
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 16,
+                                          ),
+                                        ),
+                                        onPressed: () {
+                                          payment == 0
+                                              ? Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          paymentType()))
+                                              : null;
+                                        },
+                                      )),
+                                )
+                              : Container(),
+                          active2 == 1
+                              ? Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 10, left: 20, right: 20, bottom: 10),
+                                  child: Container(
+                                      width: double.infinity,
+                                      child: ElevatedButton(
+                                        child: Text(
+                                          "Transaction History",
+                                        ),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor:
+                                              Color.fromARGB(255, 7, 80, 140),
+                                          shape: const StadiumBorder(),
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 16,
+                                          ),
+                                        ),
+                                        onPressed: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      PaymentPic()));
+                                        },
+                                      )),
+                                )
+                              : Container(),
                         ],
                       ),
                     ),

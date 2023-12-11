@@ -6,8 +6,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hostelhub/Rooms/room_controller.dart';
-import 'package:hostelhub/hostels/user_hostel.dart';
 import 'package:hostelhub/services/hostel_details_controller.dart';
+import 'package:hostelhub/userdashboard/user_dashbord.dart';
 
 class bookerdetails extends StatefulWidget {
   const bookerdetails({Key? key}) : super(key: key);
@@ -29,6 +29,7 @@ class _bookerdetailsState extends State<bookerdetails> {
   User? user;
   int? userActive;
   String? phoneNumber;
+
   @override
   void initState() {
     super.initState();
@@ -111,9 +112,7 @@ class _bookerdetailsState extends State<bookerdetails> {
         appBar: AppBar(
           leading: IconButton(
             icon: Icon(
-              Icons.arrow_back_ios_new, // Replace with the desired back icon
-              // You can use any icon from the Icons class or your custom icon.
-              // For example: Icons.arrow_back, Icons.close, etc.
+              Icons.arrow_back_ios_new,
               color: Colors.white,
             ),
             onPressed: () {
@@ -208,6 +207,7 @@ class _bookerdetailsState extends State<bookerdetails> {
                           ),
                           TextField(
                             controller: uPhonenoController,
+                            keyboardType: TextInputType.number,
                             decoration: InputDecoration(
                               hintText: "$phoneNumber",
                               fillColor: Theme.of(context)
@@ -226,6 +226,7 @@ class _bookerdetailsState extends State<bookerdetails> {
                           ),
                           TextField(
                             controller: addressController,
+                            keyboardType: TextInputType.number,
                             decoration: InputDecoration(
                               hintText: "Cnic",
                               fillColor: Theme.of(context)
@@ -238,7 +239,6 @@ class _bookerdetailsState extends State<bookerdetails> {
                                 borderSide: BorderSide.none,
                               ),
                             ),
-                            // obscureText: true,
                           ),
                           const SizedBox(
                             height: 10,
@@ -257,7 +257,6 @@ class _bookerdetailsState extends State<bookerdetails> {
                                 borderSide: BorderSide.none,
                               ),
                             ),
-                            // obscureText: true,
                           ),
                           const SizedBox(
                             height: 10,
@@ -273,45 +272,69 @@ class _bookerdetailsState extends State<bookerdetails> {
                               var uphone = uPhonenoController.text.trim();
                               var address = addressController.text.trim();
 
+                              if (username.isEmpty ||
+                                  uemail.isEmpty ||
+                                  cnic.isEmpty ||
+                                  uphone.isEmpty ||
+                                  address.isEmpty) {
+                                Fluttertoast.showToast(
+                                  msg: "Please fill in all fields",
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.BOTTOM,
+                                  timeInSecForIosWeb: 1,
+                                  backgroundColor:
+                                      Color.fromARGB(255, 7, 80, 140),
+                                  textColor: Colors.white,
+                                );
+                                return;
+                              }
+                              if (uphone.length != 11) {
+                                Fluttertoast.showToast(
+                                  msg: "Phone number must be 11 digits long",
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.BOTTOM,
+                                  timeInSecForIosWeb: 1,
+                                  backgroundColor:
+                                      Color.fromARGB(255, 7, 80, 140),
+                                  textColor: Colors.white,
+                                );
+                                return;
+                              }
+
                               try {
                                 print("userActive:$userActive");
                                 if (userActive == 1) {
-                                  print("docoment Alredy exist");
+                                  print("document already exists");
                                 } else {
-                                  if (username != null &&
-                                      uemail != null &&
-                                      cnic != null &&
-                                      uphone != null &&
-                                      address != null) {
-                                    await FirebaseFirestore.instance
-                                        .collection('usersBookedDetails')
-                                        .doc(userId)
-                                        .set({
-                                      "username": username,
-                                      "email": uemail,
-                                      "createdId": DateTime.now(),
-                                      "uPhone": uphone,
-                                      "cnic": cnic,
-                                      "userId": userId,
-                                      "roomId": roomController().roomId,
-                                      "address": address,
-                                      "hostelID": HostelController().hostelName,
-                                      "Active": 0,
-                                      "payment": 0,
-                                    });
-                                    FirebaseFirestore.instance
-                                        .collection("users")
-                                        .doc("$userId")
-                                        .update({
-                                      "active": 2,
-                                    });
-                                    await sendNotificationToServer();
-                                    Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => hostelsUser()),
-                                    );
-                                  }
+                                  await FirebaseFirestore.instance
+                                      .collection('usersBookedDetails')
+                                      .doc(userId)
+                                      .set({
+                                    "username": username,
+                                    "email": uemail,
+                                    "createdId": DateTime.now(),
+                                    "uPhone": uphone,
+                                    "cnic": cnic,
+                                    "userId": userId,
+                                    "roomId": roomController().roomId,
+                                    "address": address,
+                                    "hostelID": HostelController().hostelName,
+                                    "Active": 0,
+                                    "payment": 0,
+                                  });
+
+                                  FirebaseFirestore.instance
+                                      .collection("users")
+                                      .doc("$userId")
+                                      .update({
+                                    "active": 2,
+                                  });
+                                  await sendNotificationToServer();
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => userDashboard()),
+                                  );
                                 }
                               } catch (e) {
                                 Fluttertoast.showToast(

@@ -1,7 +1,10 @@
 // ignore_for_file: file_names, camel_case_types, library_private_types_in_public_api, prefer_const_constructors, unused_local_variable, unused_element, use_build_context_synchronously, avoid_print, avoid_unnecessary_containers, sort_child_properties_last
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
+
+import 'addwarden.dart';
 
 class warden extends StatefulWidget {
   const warden({Key? key}) : super(key: key);
@@ -30,6 +33,19 @@ class _BillsUserState extends State<warden> {
           },
         ),
         title: const Text("Wardens"),
+      ),
+      bottomNavigationBar: CurvedNavigationBar(
+        color: Color.fromARGB(255, 7, 80, 140),
+        backgroundColor: Colors.white,
+        buttonBackgroundColor: Color.fromARGB(255, 7, 80, 140),
+        height: 60,
+        items: const <Widget>[
+          Icon(Icons.add, size: 30, color: Colors.white),
+        ],
+        onTap: (index) {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const Addwaden()));
+        },
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
@@ -62,6 +78,7 @@ class _BillsUserState extends State<warden> {
                 QueryDocumentSnapshot document = documents[index];
                 Map<String, dynamic>? data =
                     documents[index].data() as Map<String, dynamic>?;
+                var uid = data?["userId"];
                 var paid = data?["paid"];
                 var username = data?['username'];
                 var email = data?['email'];
@@ -69,6 +86,7 @@ class _BillsUserState extends State<warden> {
                 var phone = data?["uPhone"];
                 var salary = data?["salary"];
                 var userCheckuser = data?["checkuser"] as int;
+                var hostel = data?["hostelName"];
                 // var status = data?["status"];
                 return Card(
                   // Remove the default elevation
@@ -123,6 +141,7 @@ class _BillsUserState extends State<warden> {
                                 Text("Email: $email"),
                                 Text("Contact: $phone"),
                                 Text("Salary: $salary"),
+                                Text("Hostel:$hostel"),
                                 paid == 0
                                     ? Text("Salary status: Not paid")
                                     : Text("Salary status: paid"),
@@ -142,7 +161,7 @@ class _BillsUserState extends State<warden> {
                                                   ? "User"
                                                   : userCheckuser == 1
                                                       ? "Employee"
-                                                      : "Edit salary",
+                                                      : "Edit salary ",
                                               style: TextStyle(
                                                   color: Colors.white),
                                             ),
@@ -176,7 +195,13 @@ class _BillsUserState extends State<warden> {
                                             Color.fromARGB(255, 7, 80, 140),
                                         shape: const StadiumBorder(),
                                       ),
-                                    )
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    GestureDetector(
+                                        onDoubleTap: () => {_editwarden(uid)},
+                                        child: Icon(Icons.edit)),
                                   ],
                                 ),
                               ],
@@ -277,12 +302,41 @@ class _BillsUserState extends State<warden> {
     );
   }
 
-  void _showEditDialog(String index, String name, double total) {
+  void _editwarden(String? userId) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Edit warden"),
+            actions: [
+              TextButton(
+                  onPressed: () async {
+                    await FirebaseFirestore.instance
+                        .collection("users")
+                        .doc(userId)
+                        .update({
+                      "checkuser": 0,
+                    });
+                    Navigator.pop(context);
+                  },
+                  child: Text("Remove warden")),
+              TextButton(
+                child: Text('Cancel'),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          );
+        });
+  }
+
+  void _showEditDialog(String index, String name, int total) {
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Edit salary '),
+          title: Text('Edit salary and warden '),
           content: Text('Change payment status for ?'),
           actions: [
             TextButton(

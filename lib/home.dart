@@ -9,7 +9,9 @@ import 'package:hostelhub/bookings/applications.dart';
 // import 'package:hostelhub/hostels/hostelDetails.dart';
 import 'package:hostelhub/hostels/hostels.dart';
 import 'package:hostelhub/admin/Dasbord/dashbord.dart';
+import 'package:hostelhub/login/singup/login_controller.dart';
 import 'package:hostelhub/payment/payments.dart';
+import 'package:hostelhub/transaction/hostels.dart';
 
 import 'complains/complains.dart';
 import 'hostels/hostel_details.dart';
@@ -46,6 +48,8 @@ class _HomeScreenState extends State<HomeScreen> {
       if (data != null) {
         setState(() {
           checkuser = data['checkuser'];
+          loginController().checkuser = checkuser;
+          print(loginController().checkuser);
         });
       }
     });
@@ -91,7 +95,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                     image: DecorationImage(
-                      image: AssetImage("assets/images/Application.jpg"),
+                      image: AssetImage("assets/images/requests.png"),
                       fit: BoxFit
                           .fill, // Ensure the image covers the entire container
                       // colorFilter: ColorFilter.mode(
@@ -143,7 +147,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       )),
                   child: Center(
                     child: Text(
-                      'Payments',
+                      'Rent',
                       style: TextStyle(
                           color: Colors.white,
                           fontSize: 35,
@@ -183,7 +187,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => TransactionsScreen()));
+                                builder: (context) => hostelTransaction()));
                       },
                     )
                   : Container(),

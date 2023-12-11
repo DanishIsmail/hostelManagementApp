@@ -205,44 +205,6 @@ class _allUsersState extends State<allUsers> {
                                                 shape: const StadiumBorder(),
                                               ),
                                             ),
-                                      SizedBox(
-                                        width: 10,
-                                      ),
-                                      checkuser == 1
-                                          ? ElevatedButton(
-                                              onPressed: () async {
-                                                if (warden == 2) {
-                                                  await FirebaseFirestore
-                                                      .instance
-                                                      .collection("users")
-                                                      .doc(user['userId'])
-                                                      .update({
-                                                    "checkuser": 0,
-                                                  });
-                                                } else {
-                                                  await FirebaseFirestore
-                                                      .instance
-                                                      .collection("users")
-                                                      .doc(user['userId'])
-                                                      .update({
-                                                    "checkuser": 2,
-                                                    'paid': 0,
-                                                    "salary": 0,
-                                                  });
-                                                }
-                                                // After performing the update, fetch the updated user data again
-                                                await fetchUsers();
-                                              },
-                                              child: Text(warden == 0
-                                                  ? "Make Warden"
-                                                  : "Remove Warden"),
-                                              style: ElevatedButton.styleFrom(
-                                                backgroundColor: Color.fromARGB(
-                                                    255, 7, 80, 140),
-                                                shape: const StadiumBorder(),
-                                              ),
-                                            )
-                                          : Container()
                                     ],
                                   ),
                                 ],
