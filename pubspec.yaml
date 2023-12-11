@@ -58,6 +58,7 @@ dependencies:
   rating_dialog: ^2.0.4
   url_launcher: ^6.2.1
   webview_flutter: ^4.4.2
+  universal_html: ^2.2.4
 
 dev_dependencies:
   flutter_test:

@@ -1,6 +1,7 @@
-// ignore_for_file: camel_case_types, library_private_types_in_public_api, deprecated_member_use, use_build_context_synchronously, prefer_const_constructors, use_key_in_widget_constructors, avoid_unnecessary_containers, curly_braces_in_flow_control_structures, avoid_print, sized_box_for_whitespace, unused_import
+// ignore_for_file: camel_case_types, library_private_types_in_public_api, deprecated_member_use, use_build_context_synchronously, prefer_const_constructors, use_key_in_widget_constructors, avoid_unnecessary_containers, curly_braces_in_flow_control_structures, avoid_print, sized_box_for_whitespace, unused_import, prefer_final_fields
 
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hostelhub/payment/paymnet_controller.dart';
@@ -20,23 +21,28 @@ class _PaymentMethodScreenState extends State<payment_method> {
   int? input;
   TextEditingController paymentController = TextEditingController();
 
-  Future<void> _sendPayment(userId) async {
-    setState(() {
-      _isLoading = false;
-    });
+  // Future<void> _sendPayment(userId) async {
+  //   setState(() {
+  //     _isLoading = false;
+  //   });
 
-    const url = 'https://www.hblibank.com.pk/Login';
-    if (await canLaunch(url)) {
-      await launch(url);
-      // Uncomment the following lines if you want to navigate to userDashboard after launching the URL
-      // Navigator.push(
-      //   context,
-      //   MaterialPageRoute(builder: (context) => userDashboard()),
-      // );
-    } else {
-      throw 'Could not launch $url';
-    }
-  }
+  //   const url = 'https://www.hblibank.com.pk/Login';
+  //   try {
+  //     if (await canLaunch(url)) {
+  //       // Check if the URL is not an IPv6 address
+  //       final Uri uri = Uri.parse(url);
+  //       if (uri.host != null && !uri.host!.contains(':')) {
+  //         await launch(url);
+  //       } else {
+  //         throw 'Invalid URL format: $url';
+  //       }
+  //     } else {
+  //       throw 'Could not launch $url';
+  //     }
+  //   } catch (e) {
+  //     print('Error launching URL: $e');
+  //   }
+  // }
 
   @override
   void initState() {
@@ -91,7 +97,10 @@ class _PaymentMethodScreenState extends State<payment_method> {
                       // ignore: unrelated_type_equality_checks
                       if (userpayment().rent == inputText) {
                         if (!_isLoading) {
-                          _sendPayment(userpayment().uid);
+                          const link = "https://www.hblibank.com.pk/Login";
+                          launchUrl(Uri.parse(link),
+                              mode: LaunchMode.inAppWebView);
+                          // _sendPayment(userpayment().uid);
                         }
                       } else {
                         Fluttertoast.showToast(
