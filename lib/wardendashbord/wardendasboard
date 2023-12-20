@@ -6,7 +6,7 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:hostelhub/hostels/add_hostel.dart';
 import 'package:hostelhub/hostels/sing_hostel.dart';
 
-import '../Dasbord/services/hostel_details_controller.dart';
+import '../admin/Dasbord/services/hostel_details_controller.dart';
 
 class wardenDashboard extends StatefulWidget {
   const wardenDashboard({Key? key}) : super(key: key);
