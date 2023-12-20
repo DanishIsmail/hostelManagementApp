@@ -64,7 +64,6 @@ class _allComplainsState extends State<allComplains> {
         child: Column(
           children: [
             Container(
-              height: 500,
               color: Color.fromARGB(26, 241, 241, 241),
               child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
                 stream: FirebaseFirestore.instance
