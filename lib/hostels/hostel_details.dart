@@ -13,7 +13,7 @@ import 'package:hostelhub/services/hostel_details_controller.dart';
 import '../Rooms/book_room.dart';
 import '../Rooms/update_room.dart';
 import '../login/singup/login_controller.dart';
-import 'add_room_details.dart';
+import '../Rooms/add_room_details.dart';
 
 class hostelDetails extends StatefulWidget {
   const hostelDetails({super.key});

@@ -8,7 +8,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
-import 'add_room_details.dart';
+import '../Rooms/add_room_details.dart';
 
 class newHostel extends StatefulWidget {
   const newHostel({Key? key}) : super(key: key);

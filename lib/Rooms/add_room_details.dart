@@ -6,7 +6,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hostelhub/Rooms/room_controller.dart';
 import 'package:hostelhub/services/hostel_details_controller.dart';
 
-import 'hostels.dart';
+import '../hostels/hostels.dart';
 
 class addHostelRoom extends StatefulWidget {
   addHostelRoom({super.key});
