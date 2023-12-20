@@ -2,7 +2,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:hostelhub/admin/Dasbord/dashbord.dart';
+import 'package:hostelhub/Dasbord&admin&warden/dashbord.dart';
 import 'package:hostelhub/hostels/add_hostel.dart';
 import 'package:hostelhub/hostels/sing_hostel.dart';
 

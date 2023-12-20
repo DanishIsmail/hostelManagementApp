@@ -8,7 +8,7 @@ import 'package:hostelhub/admin/wardens.dart';
 import 'package:hostelhub/bookings/applications.dart';
 // import 'package:hostelhub/hostels/hostelDetails.dart';
 import 'package:hostelhub/hostels/hostels.dart';
-import 'package:hostelhub/admin/Dasbord/dashbord.dart';
+import 'package:hostelhub/Dasbord&admin&warden/dashbord.dart';
 import 'package:hostelhub/login/singup/login_controller.dart';
 import 'package:hostelhub/payment/payments.dart';
 import 'package:hostelhub/transaction/hostels.dart';

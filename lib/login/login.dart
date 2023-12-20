@@ -7,7 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hostelhub/forgetPassword/fogetpasword.dart';
 import 'package:hostelhub/login/singup/login_controller.dart';
 import '../userdashboard/user_dashbord.dart';
-import '../admin/Dasbord/dashbord.dart';
+import '../Dasbord&admin&warden/dashbord.dart';
 import 'singup/singup.dart';
 
 class LoginPage extends StatefulWidget {

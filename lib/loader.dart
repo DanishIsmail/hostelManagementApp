@@ -4,7 +4,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:hostelhub/admin/Dasbord/dashbord.dart';
+import 'package:hostelhub/Dasbord&admin&warden/dashbord.dart';
 import 'package:hostelhub/services/sesstion_controller.dart';
 import 'package:hostelhub/userdashboard/user_dashbord.dart';
 import 'navigation.dart';

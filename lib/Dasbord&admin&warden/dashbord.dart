@@ -1,4 +1,4 @@
-// ignore_for_file: unused_import, prefer_const_constructors, avoid_unnecessary_containers, duplicate_ignore, file_names, prefer_const_literals_to_create_immutables, use_key_in_widget_constructors, unused_element, unused_field, sized_box_for_whitespace, avoid_print
+// ignore_for_file: unused_import, prefer_const_constructors, avoid_unnecessary_containers, duplicate_ignore, file_names, prefer_const_literals_to_create_immutables, use_key_in_widget_constructors, unused_element, unused_field, sized_box_for_whitespace, avoid_print, unused_local_variable
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,9 +10,9 @@ import 'package:hostelhub/home.dart';
 // import 'package:hostelhub/hostels/hostels.dart';
 import 'package:hostelhub/profile.dart';
 
-import '../details.dart';
-import '../../hostels/add_hostel.dart';
-import '../../login/login.dart';
+import '../admin/details.dart';
+import '../hostels/add_hostel.dart';
+import '../login/login.dart';
 
 class Dashboard extends StatefulWidget {
   Dashboard({super.key});
@@ -36,12 +36,37 @@ class _DashboardState extends State<Dashboard> {
   String disp = '';
   int _selectedIndex = 0;
   String? text = "Hostel Hub";
+  User user = FirebaseAuth.instance.currentUser!;
+  String? userId;
+  String email = '';
+  int? checkuser;
+  @override
+  void initState() {
+    super.initState();
+    fetchCheckUser();
+  }
+
+  Future<void> fetchCheckUser() async {
+    userId = user.uid;
+    final querySnapshot = await FirebaseFirestore.instance
+        .collection("users")
+        .doc(userId)
+        .get()
+        .then((snapshot) {
+      var data = snapshot.data();
+      if (data != null) {
+        setState(() {
+          checkuser = data['checkuser'];
+        });
+      }
+    });
+  }
 
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
       if (index == 0) {
-        text = "Hostel Hub";
+        checkuser == 1 ? text = "Admin Dshboard" : text = "Warden Dshboard";
       }
       if (index == 1) {
         text = "All User";
